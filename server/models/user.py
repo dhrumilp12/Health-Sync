@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, EmailField, DateTimeField, ListField, BooleanField, EmbeddedDocument, EmbeddedDocumentField
+from mongoengine import Document, StringField, EmailField, DateTimeField, ListField, BooleanField, EmbeddedDocument, EmbeddedDocumentField, IntField
 from datetime import datetime
 
 class Medication(EmbeddedDocument):
