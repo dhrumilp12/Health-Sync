@@ -72,6 +72,7 @@ def login():
     if user and check_password_hash(user.password, password):
         if user.account_locked:
             return jsonify({"msg": "Account is locked due to too many failed login attempts"}), 403
+        user.update(set__login_attempts=0)
         access_token = create_access_token(identity=user.email, expires_delta=timedelta(hours=48))
         return jsonify(access_token=access_token), 200
     else:
@@ -115,7 +116,12 @@ def update_profile():
         gender=data.get('gender', user.gender),
         phone_number=data.get('phone_number', user.phone_number),
         language_preference=data.get('language_preference', user.language_preference),
-        notification_enabled=data.get('notification_enabled', user.notification_enabled)
+        notification_enabled=data.get('notification_enabled', user.notification_enabled),
+        medical_conditions=data.get('medical_conditions', user.medical_conditions),
+        medications=data.get('medications', user.medications),
+        doctor_contacts=data.get('doctor_contacts', user.doctor_contacts),
+        emergency_contacts=data.get('emergency_contacts', user.emergency_contacts),
+        sos_location=data.get('sos_location', user.sos_location)
     )
     user.save()
     return jsonify({"msg": "Profile updated successfully"}), 200
