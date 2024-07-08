@@ -1,3 +1,5 @@
+import logging
+import re
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from models.user import User
@@ -5,6 +7,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
 
 user_routes = Blueprint("user", __name__)
+
+# Helper function to validate email
+def is_valid_email(email):
+    return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
 @user_routes.post('/register')
 def register():
@@ -19,12 +25,19 @@ def register():
     # Validate all required fields are provided
     if None in [username, email, password, first_name, last_name, date_of_birth_str]:
         return jsonify({"msg": "Missing required parameter"}), 400
-
+    
+    if not is_valid_email(email):
+        return jsonify({"msg": "Invalid email format"}), 400
     # Convert date_of_birth to datetime
     try:
         date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d')
+        if date_of_birth >= datetime.now():
+            return jsonify({"msg": "Date of birth cannot be in the future"}), 400
     except ValueError:
-        return jsonify({"msg": "Invalid date format. Use YYYY-MM-DD."}), 400
+        return jsonify({"msg": "Date of birth must be in YYYY-MM-DD format"}), 400
+    
+    if len(password) < 8 or not re.search("[0-9]", password) or not re.search("[A-Z]", password):
+        return jsonify({"msg": "Password must be at least 8 characters long, include a number, and an uppercase letter"}), 400
 
     if User.objects(email=email).first():
         return jsonify({"msg": "Email already registered"}), 409
@@ -57,9 +70,14 @@ def login():
     # Allow login with either email or username
     user = User.objects(__raw__={'$or': [{'email': login_val}, {'username': login_val}]}).first()
     if user and check_password_hash(user.password, password):
+        if user.account_locked:
+            return jsonify({"msg": "Account is locked due to too many failed login attempts"}), 403
         access_token = create_access_token(identity=user.email, expires_delta=timedelta(hours=48))
         return jsonify(access_token=access_token), 200
     else:
+        user.update(inc__login_attempts=1)
+        if user.login_attempts >= 5:
+            user.update(set__account_locked=True)
         return jsonify({"msg": "Invalid login credentials"}), 401
 
 @user_routes.get('/protected')
@@ -118,7 +136,40 @@ def change_password():
         return jsonify({"msg": "Please provide current and new passwords"}), 400
     if not check_password_hash(user.password, current_password):
         return jsonify({"msg": "Current password is incorrect"}), 401
-    
+    # Validate the new password strength
+    if len(new_password) < 8 or not re.search("[0-9]", new_password) or not re.search("[A-Z]", new_password):
+        return jsonify({"msg": "New password must be at least 8 characters long, include a number, and an uppercase letter"}), 400
     user.password = generate_password_hash(new_password)
     user.save()
     return jsonify({"msg": "Password changed successfully"}), 200
+
+@user_routes.delete('/delete-account')
+@jwt_required()
+def delete_account():
+    current_user_email = get_jwt_identity()
+    user = User.objects(email=current_user_email).first()
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    data = request.get_json()
+    current_password = data.get('password')
+    
+    if not current_password:
+        return jsonify({"msg": "Password required"}), 400
+
+    # Verify the password
+    if not check_password_hash(user.password, current_password):
+        return jsonify({"msg": "Password is incorrect"}), 401
+    
+    # Optionally, perform more checks or request re-authentication if necessary
+    user.delete()
+    return jsonify({"msg": "User account deleted successfully"}), 200
+
+
+@user_routes.post('/logout')
+@jwt_required()
+def logout():
+    # JWT Revocation or Blacklisting could be implemented here if needed
+    jwt_id = get_jwt_identity()
+    logging.info(f"User {jwt_id} logged out successfully")
+    return jsonify({"msg": "Logout successful"}), 200
