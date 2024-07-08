@@ -2,7 +2,7 @@ import logging
 import re
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models.user import User
+from models.user import User,Medication,DoctorContact,EmergencyContact
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
 
@@ -21,6 +21,15 @@ def register():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     date_of_birth_str = data.get('date_of_birth')
+    gender = data.get('gender', None)
+    phone_number = data.get('phone_number', None)
+    medical_conditions = data.get('medical_conditions', [])
+    medications = data.get('medications', [])
+    doctor_contacts = data.get('doctor_contacts', [])
+    emergency_contacts = data.get('emergency_contacts', [])
+    sos_location = data.get('sos_location', None)
+    language_preference = data.get('language_preference', None)
+    notification_enabled = data.get('notification_enabled', True)
 
     # Validate all required fields are provided
     if None in [username, email, password, first_name, last_name, date_of_birth_str]:
@@ -52,7 +61,16 @@ def register():
         password=hashed_password,
         first_name=first_name,
         last_name=last_name,
-        date_of_birth=date_of_birth
+        date_of_birth=date_of_birth,
+        gender=gender,
+        phone_number=phone_number,
+        medical_conditions=medical_conditions,
+        medications=[Medication(**med) for med in medications],
+        doctor_contacts=[DoctorContact(**doc) for doc in doctor_contacts],
+        emergency_contacts=[EmergencyContact(**emc) for emc in emergency_contacts],
+        sos_location=sos_location,
+        language_preference=language_preference,
+        notification_enabled=notification_enabled
     )
     new_user.save()
     # Create an access token for the new user
