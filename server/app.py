@@ -3,6 +3,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from mongoengine import connect
+from flask_cors import CORS
+
 from routes.user import user_routes
 import os
 from twilio.rest import Client
@@ -11,6 +13,7 @@ import geocoder
 load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')  # Change this to a random secret key in production
 app.config['MONGODB_SETTINGS'] = {

@@ -14,7 +14,8 @@ def is_valid_email(email):
 
 @user_routes.post('/register')
 def register():
-    data = request.get_json()
+    data = request.get_json(force=True)
+    print("Received data:", data)
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
@@ -32,11 +33,10 @@ def register():
     notification_enabled = data.get('notification_enabled', True)
 
     # Validate all required fields are provided
-    if None in [username, email, password, first_name, last_name, date_of_birth_str]:
+    print("Checking data:", username, email, password, first_name, last_name, date_of_birth_str)
+    if not all([username, email, password, first_name, last_name, date_of_birth_str]):
         return jsonify({"msg": "Missing required parameter"}), 400
-    
-    if not is_valid_email(email):
-        return jsonify({"msg": "Invalid email format"}), 400
+
     # Convert date_of_birth to datetime
     try:
         date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d')
@@ -44,6 +44,10 @@ def register():
             return jsonify({"msg": "Date of birth cannot be in the future"}), 400
     except ValueError:
         return jsonify({"msg": "Date of birth must be in YYYY-MM-DD format"}), 400
+    
+    if not is_valid_email(email):
+        return jsonify({"msg": "Invalid email format"}), 400
+    
     
     if len(password) < 8 or not re.search("[0-9]", password) or not re.search("[A-Z]", password):
         return jsonify({"msg": "Password must be at least 8 characters long, include a number, and an uppercase letter"}), 400
