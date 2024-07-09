@@ -3,16 +3,12 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from mongoengine import connect
-
 from routes.user import user_routes
-import os
-
-load_dotenv()  # Load environment variables from .env file
 import os
 from twilio.rest import Client
 import geocoder
 
-load_dotenv()
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
 
