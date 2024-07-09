@@ -4,6 +4,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { messaging } from "../firebase";
+import { getToken, onMessage } from "firebase/messaging";
 
 const SOS = () => {
   const [latitude, setLatitude] = useState(null);
@@ -30,10 +32,6 @@ const SOS = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchGeolocation();
-  }, [fetchGeolocation]);
-
   const DefaultIcon = L.icon({
     iconUrl: markerIcon,
     shadowUrl: markerShadow,
@@ -44,7 +42,29 @@ const SOS = () => {
   });
 
   L.Marker.prototype.options.icon = DefaultIcon;
+  const requestPermission = async () => {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: process.env.REACT_APP_VAPID_KEY,
+      });
+      console.log("FCM Token:", token);
+    } else {
+      alert("Permission Denied");
+    }
+  };
 
+  useEffect(() => {
+    fetchGeolocation();
+    requestPermission();
+
+    onMessage(messaging, (payload) => {
+      console.log("Message received. ", payload);
+      alert(
+        `Notification: ${payload.notification.title} - ${payload.notification.body}`
+      );
+    });
+  }, [fetchGeolocation]);
   return (
     <div>
       {latitude !== null && longitude !== null ? (
