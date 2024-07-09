@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Alert, CircularProgress, IconButton, InputAdornment, Paper, Box } from '@mui/material';
+import { Container,Box, TextField, Button, Typography, Alert, CircularProgress, IconButton, InputAdornment, Paper } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockIcon from '@mui/icons-material/Lock';
-
 const ChangePassword = () => {
     const [passwords, setPasswords] = useState({
         currentPassword: '',
@@ -71,13 +70,13 @@ const ChangePassword = () => {
     };
 
     return (
-        <Container component={Paper} maxWidth="sm" sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3, textAlign: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, marginBottom: 2 }}>
-                <LockIcon color="primary" />
-                <Typography variant="h5" color="primary">
-                    Change Password
-                </Typography>
-            </Box>
+        <Container component={Paper} maxWidth="sm" sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginBottom: 2 , justifyContent: 'center'}}>
+            <LockIcon color="primary" />
+            <Typography variant="h5" color="primary" >
+                Change Password
+            </Typography>
+        </Box>
             {error && <Alert severity="error">{error}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
             <TextField
