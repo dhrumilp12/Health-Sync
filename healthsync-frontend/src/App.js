@@ -7,6 +7,7 @@ import Profile from "./components/Profile";
 import ChangePassword from "./components/ChangePassword";
 import DeleteAccount from "./components/DeleteAccount";
 import LogoutButton from "./components/LogoutButton";
+import SOS from "./pages/SOS";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
+        <Route path="/sos" element={<SOS />} />
       </Routes>
     </>
   );
