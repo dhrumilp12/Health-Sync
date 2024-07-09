@@ -9,6 +9,7 @@ import DeleteAccount from "./components/DeleteAccount";
 import LogoutButton from "./components/LogoutButton";
 import VolunteerDash from "./components/VolunteerDash";
 import VolunteerReq from "./components/VolunteerReq";
+import SOS from "./pages/SOS";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/register" element={<Signup />} />
         <Route path="/dashboard/volunteer" element={<VolunteerDash />} />
         <Route path="/volunteer-req" element={<VolunteerReq />} />
+        <Route path="/sos" element={<SOS />} />
       </Routes>
     </>
   );
