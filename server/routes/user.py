@@ -2,7 +2,7 @@ import logging
 import re
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models.user import User,Medication,DoctorContact,EmergencyContact
+from models.user import User,Medication,DoctorContact,EmergencyContact,AppointmentSchedule
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
 
@@ -201,3 +201,31 @@ def logout():
     jwt_id = get_jwt_identity()
     logging.info(f"User {jwt_id} logged out successfully")
     return jsonify({"msg": "Logout successful"}), 200
+
+@user_routes.post('/schedule-appointment')
+def scheduleAppointment():
+    data = request.get_json(force=True)
+    name = data.get('name')
+    doctorName = data.get('doctorName')
+    date = data.get('date')
+    print("Checking all data: ", name, doctorName, date)
+    newAppointment = AppointmentSchedule(
+        name=name,
+        doctorName=doctorName,
+        date=date
+    )
+    newAppointment.save()
+    return jsonify({"msg": "Appointment successfully created"}), 200
+
+@user_routes.get('/get-appointments-list')
+def getAppointmentsList():
+    appointments = AppointmentSchedule.objects()
+    appointments_list = []
+    for appointment in appointments:
+        appointments_list.append({
+            "name": appointment.name,
+            "doctorName": appointment.doctorName,  
+            "date": appointment.date.isoformat()  
+        })
+    print("Appointment list: ", appointments_list)
+    return jsonify(appointments_list), 200
