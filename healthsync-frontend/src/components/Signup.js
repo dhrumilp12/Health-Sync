@@ -78,6 +78,8 @@ const Signup = () => {
       notificationEnabled: formData.notificationEnabled,
     };
 
+    console.log("Formatted Data to send:", formattedData);
+
     try {
       const response = await fetch("http://localhost:5000/api/register", {
         method: "POST",
