@@ -8,6 +8,8 @@ import ChangePassword from "./components/ChangePassword";
 import DeleteAccount from "./components/DeleteAccount";
 import LogoutButton from "./components/LogoutButton";
 import SOS from "./pages/SOS";
+import AppointmentForm from "./components/Appointment/AppointmentForm";
+import AppointmentsList from "./components/Appointment/AppointmentsList";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/sos" element={<SOS />} />
+        <Route path="/schedule-appointment" element={<AppointmentForm />} />
+        <Route path="/appointment-list" element={<AppointmentsList />} />
       </Routes>
     </>
   );
