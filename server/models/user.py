@@ -36,3 +36,8 @@ class User(Document):
     notification_enabled = BooleanField(default=True)
     login_attempts = IntField(default=0)
     account_locked = BooleanField(default=False)
+
+class AppointmentSchedule(Document): 
+    name = StringField(required=True)
+    doctorName = StringField(required=True)
+    date = DateTimeField(required=True)
