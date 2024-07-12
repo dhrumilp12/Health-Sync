@@ -6,7 +6,7 @@ from mongoengine import connect
 from flask_cors import CORS
 
 from routes.user import user_routes
-from routes.tensorflow import tensorflow_routes
+from routes.OpenAI import OpenAI_routes
 import os
 from twilio.rest import Client
 import geocoder
@@ -26,7 +26,7 @@ jwt = JWTManager(app)
 
 # Register routes
 app.register_blueprint(user_routes, url_prefix='/api')
-app.register_blueprint(tensorflow_routes, url_prefix='/api')
+app.register_blueprint(OpenAI_routes, url_prefix='/api')
 
 TWILIO_ACCOUNT_SID=os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN=os.getenv("TWILIO_AUTH_TOKEN")
