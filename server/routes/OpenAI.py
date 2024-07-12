@@ -38,11 +38,13 @@ def handle_voice_input():
         # Check if the part 'audio' is present in files
         if 'audio' not in request.files:
             return jsonify({'error': 'Audio file is required'}), 400
+        
         # Assume the voice data is sent as a file or binary data
         voice_data = request.files['audio']
+        language = request.form.get('language', 'en-US')  # Default to English (US) if no language is specified
 
         # Save the temporary audio file if needed or pass directly to the speech_to_text function
-        text_output = speech_to_text(voice_data)
+        text_output = speech_to_text(voice_data, language=language)
         
         if text_output:
             return jsonify({'message': text_output}), 200

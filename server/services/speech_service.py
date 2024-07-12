@@ -26,7 +26,7 @@ def convert_audio_to_wav(input_audio_path, output_audio_path):
         raise Exception("Failed to convert audio") from e
 
 
-def speech_to_text(audio_file):
+def speech_to_text(audio_file, language='en-US'):
     
         # Save original audio to a temporary file
     temp_input_path = 'temp_input.webm'
@@ -48,10 +48,13 @@ def speech_to_text(audio_file):
         print(f"Size of audio file: {audio_stream.getbuffer().nbytes} bytes")  # Debugging the size of the file
         audio_stream.seek(0)
         print(f"Size of audio file: {audio_stream.getbuffer().nbytes} bytes")
+        
         # Set up the speech config with your subscription details
         speech_key = os.environ.get("SPEECH_AI_KEY")
         service_region = os.environ.get("SERVICE_REGION")
         speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
+        speech_config.speech_recognition_language = language
+
         speech_config.set_property(speechsdk.PropertyId.SpeechServiceConnection_InitialSilenceTimeoutMs, "5000")  # Timeout in milliseconds
         # Create a push stream that can be used with the speech recognizer
         push_stream = speechsdk.audio.PushAudioInputStream()
