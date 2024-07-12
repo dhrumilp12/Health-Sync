@@ -48,16 +48,9 @@ def setup_langchain():
     # Establish connection to the MongoDB database
     db_client = pymongo.MongoClient(CONNECTION_STRING)
     db = db_client['healthsync']
-    medication_collection = db['Medication']
-
-    # Initialize vector store for searching through embedded text content
-    vector_store = AzureCosmosDBVectorSearch(
-        collection=medication_collection,
-        embedding=embedding_model,
-        index_name="VectorSearchIndex",
-        text_key="textContent",
-        embedding_key="vectorContent"
-    )
+    
+    # Initialize vector stores for multiple collections
+    vector_stores = setup_vector_store(db, embedding_model)
 
     # Define the system prompt template focusing on elderly health management
     system_prompt = """
@@ -65,6 +58,10 @@ def setup_langchain():
 
     Medication Information:
     {medications}
+    Doctor Contact Information:
+    {doctor_contacts}
+    Emergency Contact Information:
+    {emergency_contacts}
 
     Question:
     {question}
@@ -76,10 +73,25 @@ def setup_langchain():
     return {
         "llm": llm,
         "embedding_model": embedding_model,
-        "vector_store": vector_store,
+        "vector_stores": vector_stores,
         "prompt_template": prompt_template,
         "db": db
     }
+
+def setup_vector_store(db, embedding_model):
+    collections = ['Medication', 'DoctorContact', 'EmergencyContact']  # List additional collections here
+    vector_stores = {}
+    for collection_name in collections:
+        collection = db[collection_name]
+        vector_store = AzureCosmosDBVectorSearch(
+            collection=collection,
+            embedding=embedding_model,
+            index_name=f"{collection_name}VectorSearchIndex",
+            text_key="textContent",
+            embedding_key="vectorContent"
+        )
+        vector_stores[collection_name] = vector_store
+    return vector_stores
 
 def extract_text(docs, key='description'):
     """
@@ -108,14 +120,18 @@ def process_langchain_query(question, email, components):
     else:
         logger.info(f"User found: {user.to_json()}")  # Log the user's data in JSON format for verification
 
-     # Accessing medications; assuming it's stored directly as a field in the User model
+     # Accessing medications, doctor_contacts, and emergency_contacts
     medications = user.medications if hasattr(user, 'medications') else []
+    doctor_contacts = user.doctor_contacts if hasattr(user, 'doctor_contacts') else []
+    emergency_contacts = user.emergency_contacts if hasattr(user, 'emergency_contacts') else []
 
-    # Preparing the medications list for the prompt
+    # Preparing lists for the prompt
     medications_list = json.dumps([med.to_mongo() for med in medications], indent=2) if medications else "No medications found."
+    doctor_contacts_list = json.dumps([doc.to_mongo() for doc in doctor_contacts], indent=2) if doctor_contacts else "No doctor contacts found."
+    emergency_contacts_list = json.dumps([ec.to_mongo() for ec in emergency_contacts], indent=2) if emergency_contacts else "No emergency contacts found."
 
     # Construct the full prompt
-    full_prompt = prompt_template.format(medications=medications_list, question=question)
+    full_prompt = prompt_template.format(medications=medications_list, doctor_contacts=doctor_contacts_list, emergency_contacts=emergency_contacts_list, question=question)
     logger.info(f"Full prompt: {full_prompt}")
 
     # Invoke the model

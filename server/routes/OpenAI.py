@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-
+from services.speech_service import speech_to_text
 from models.user import User
 
 import logging
@@ -30,3 +30,19 @@ def query_langchain():
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         return jsonify({"error": str(e)}), 500
+    
+@OpenAI_routes.route("/speech_to_text", methods=['POST'])
+def handle_voice_input():
+        # Check if the part 'audio' is present in files
+        if 'audio' not in request.files:
+            return jsonify({'error': 'Audio file is required'}), 400
+        # Assume the voice data is sent as a file or binary data
+        voice_data = request.files['audio']
+
+        # Save the temporary audio file if needed or pass directly to the speech_to_text function
+        text_output = speech_to_text(voice_data)
+        
+        if text_output:
+            return jsonify({'message': text_output}), 200
+        else:
+            return jsonify({'error': 'Speech recognition failed'}), 400
