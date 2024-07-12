@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.speech_service import speech_to_text
 from models.user import User
+from services.escalation import escalate_issue
 
 import logging
 from services.langchain import setup_langchain, process_langchain_query
@@ -29,7 +30,8 @@ def query_langchain():
         return jsonify({"response": result}), 200
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        escalate_issue(email, question, str(e))
+        return jsonify({"error": str(e), "message": "Your issue has been escalated to human support. You will receive a response shortly."}), 500
     
 @OpenAI_routes.route("/speech_to_text", methods=['POST'])
 def handle_voice_input():
