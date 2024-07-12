@@ -2,7 +2,7 @@ import logging
 import re
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models.user import User,Medication,DoctorContact,EmergencyContact,AppointmentSchedule
+from models.user import User,Medication,DoctorContact,EmergencyContact,AppointmentSchedule,MedicationSchedule
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
 
@@ -229,3 +229,34 @@ def getAppointmentsList():
         })
     print("Appointment list: ", appointments_list)
     return jsonify(appointments_list), 200
+
+@user_routes.post('/schedule-medication')
+def scheduleMedication(): 
+    # Implement scheduling logic and reminder notifications.
+    data=request.get_json()
+    name = data.get('name')
+    dosage = data.get('dosage')
+    frequency = data.get('frequency')
+    date = data.get('date')
+    print("Checking all data: ", name, dosage, frequency, date)
+    newMedication = MedicationSchedule(
+        name=name,
+        dosage=dosage,
+        frequency=frequency,
+        date=date
+    )
+    newMedication.save()
+    return jsonify({"msg": "Medication successfully scheduled"}), 200
+
+@user_routes.get('/get-medications')
+def getMedicationsList():
+    medications = MedicationSchedule.objects()
+    medications_list = []
+    for medication in medications:
+        medications_list.append({
+            "name": medication.name,
+            "doctorName": medication.doctorName,  
+            "date": medication.date.isoformat()  
+        })
+    print("Appointment list: ", medications_list)
+    return jsonify(medications_list), 200
