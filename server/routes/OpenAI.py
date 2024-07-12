@@ -18,13 +18,14 @@ OpenAI_routes = Blueprint("OpenAI", __name__)
 @jwt_required()
 def query_langchain():
     question = request.json.get('question', '')
-    username = get_jwt_identity()  # If using JWT to identify the user
+    email = get_jwt_identity()  # If using JWT to identify the user
+    logger.info(f"Received question: {question} for user: {email}")
     if not question:
         return jsonify({"error": "Question is required"}), 400
 
     try:
         components = setup_langchain()
-        result = process_langchain_query(question, username, components)
+        result = process_langchain_query(question, email, components)
         return jsonify({"response": result}), 200
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")

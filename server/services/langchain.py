@@ -5,7 +5,8 @@ from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain_community.vectorstores import AzureCosmosDBVectorSearch
 from langchain.prompts import PromptTemplate
 from bson.objectid import ObjectId
-
+from models.user import User
+from bson import json_util
 import json
 import logging
 
@@ -93,21 +94,25 @@ def extract_text(docs, key='description'):
     """
     return [doc.get(key, 'No description available') for doc in docs]
 
-def process_langchain_query(question, username, components):
+def process_langchain_query(question, email, components):
     llm = components["llm"]
     prompt_template = components["prompt_template"]
     db = components["db"]
 
-    # Fetch user-specific data
-    user = db.User.find_one({'username': username})  # Assuming username is unique
+    # Fetch user-specific data using MongoEngine's filtering
+    user = User.objects(email=email).first()  # This returns a User object or None
+    logger.info(f"Attempting to find user with email: {email}")
     if not user:
+        logger.info("User not found.")
         return "User not found."
+    else:
+        logger.info(f"User found: {user.to_json()}")  # Log the user's data in JSON format for verification
 
-    # Assuming the user document includes an embedded list of medications
-    medications = user.get('medications', [])
+     # Accessing medications; assuming it's stored directly as a field in the User model
+    medications = user.medications if hasattr(user, 'medications') else []
 
-    # If medications exist, prepare the list for the prompt
-    medications_list = json.dumps(medications, indent=2) if medications else "No medications found."
+    # Preparing the medications list for the prompt
+    medications_list = json.dumps([med.to_mongo() for med in medications], indent=2) if medications else "No medications found."
 
     # Construct the full prompt
     full_prompt = prompt_template.format(medications=medications_list, question=question)
@@ -116,14 +121,20 @@ def process_langchain_query(question, username, components):
     # Invoke the model
     result = llm.invoke(full_prompt)
     logger.info(f"Raw result from model: {result}")
+    logger.info(f"Result type: {type(result)}, keys: {result.keys() if isinstance(result, dict) else 'N/A'}")
+
 
     try:
-        if isinstance(result, dict) and 'content' in result:
-            response_content = result['content']
-        elif 'choices' in result and result['choices']:
-            response_content = result['choices'][0]['text']
+        if isinstance(result, dict):
+            response_content = result.get('content', "No response generated.")
+        elif hasattr(result, 'content'):  # Checking if result has 'content' attribute
+            response_content = result.content
         else:
             response_content = "No response generated."
+            logger.info("No valid response in model result.")
+
+        # Clean up the response to remove "Answer:\n"
+        response_content = response_content.replace("Answer:\n", "").strip()
     except Exception as e:
         logger.error(f"Error processing response: {str(e)}")
         response_content = "Error processing response."
