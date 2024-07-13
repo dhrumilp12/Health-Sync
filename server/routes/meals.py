@@ -56,20 +56,25 @@ def update_meal(meal_id):
         return jsonify({'error': 'User not found'}), 404
     
     meal = Meal.objects(id=meal_id, user=user).first()
-
     if not meal:
         return jsonify({'error': 'Meal not found'}), 404
 
     data = request.get_json()
     try:
+        # Parse date from the request, ensure it's present
+        update_date = data.get('date')
+        if not update_date:
+            raise Exception("Date field is required")
         meal_items = [FoodItem(**item) for item in data.get('meals', [])]
-        meal.update(set__meals=meal_items, set__date=data['date'])
+        meal.update(set__meals=meal_items, set__date=update_date)
         meal.reload()  # Reload the updated meal
         return jsonify({'status': 'success', 'message': 'Meal updated successfully', 'meal': meal.to_json()}), 200
     except ValidationError as e:
         return jsonify({'error': 'Validation error', 'message': str(e)}), 400
     except Exception as e:
+        print(f"Unexpected Error: {str(e)}")
         return jsonify({'error': 'Internal server error', 'message': str(e)}), 500
+
 
 @meals_routes.route('/meals/<meal_id>', methods=['DELETE'])
 @jwt_required()
