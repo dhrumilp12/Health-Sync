@@ -16,6 +16,7 @@ import { useState } from "react";
 import ChatInterface from "./components/Chat_Interface";
 import AppointmentForm from "./components/Appointment/AppointmentForm";
 import AppointmentsList from "./components/Appointment/AppointmentsList";
+import ProtectedRoute from "./components/ProtectedRoute";
 import MedicationList from "./components/Medication/MedicationList";
 import MedicationSchedule from "./components/Medication/MedicationSchedule";
 
@@ -63,25 +64,89 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/logout" element={<LogoutButton />} />
-        <Route path="/delete-account" element={<DeleteAccount />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/delete-account"
+          element={
+            <ProtectedRoute>
+              <DeleteAccount />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/dashboard/volunteer" element={<VolunteerDash />} />
-        <Route path="/volunteer-req" element={<VolunteerReq />} />
-        <Route path="/sos" element={<SOS />} />
+        <Route
+          path="/volunteer-req"
+          element={
+            <ProtectedRoute>
+              <VolunteerReq />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sos"
+          element={
+            <ProtectedRoute>
+              <SOS />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/health-input"
-          element={<HealthDataInput addHealthData={addHealthData} />}
+          element={
+            <ProtectedRoute>
+              <HealthDataInput addHealthData={addHealthData} />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/health-visualization"
-          element={<HealthDataVisualization healthData={healthData} />}
+          element={
+            <ProtectedRoute>
+              <HealthDataVisualization healthData={healthData} />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/chat" element={<ChatInterface />} />
-        <Route path="/schedule-appointment" element={<AppointmentForm />} />
-        <Route path="/appointment-list" element={<AppointmentsList />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <ChatInterface />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/schedule-appointment"
+          element={
+            <ProtectedRoute>
+              <AppointmentForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/appointment-list"
+          element={
+            <ProtectedRoute>
+              <AppointmentsList />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/medication-list" element={<MedicationList />} />
         <Route path="/medication-form" element={<MedicationSchedule />} />
       </Routes>
