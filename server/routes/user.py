@@ -234,13 +234,13 @@ def getAppointmentsList():
 def scheduleMedication(): 
     # Implement scheduling logic and reminder notifications.
     data=request.get_json()
-    name = data.get('name')
+    medicineName = data.get('medicineName')
     dosage = data.get('dosage')
     frequency = data.get('frequency')
     date = data.get('date')
-    print("Checking all data: ", name, dosage, frequency, date)
+    print("Checking all data: ", medicineName, dosage, frequency, date)
     newMedication = MedicationSchedule(
-        name=name,
+        medicineName=medicineName,
         dosage=dosage,
         frequency=frequency,
         date=date
@@ -254,9 +254,10 @@ def getMedicationsList():
     medications_list = []
     for medication in medications:
         medications_list.append({
-            "name": medication.name,
-            "doctorName": medication.doctorName,  
-            "date": medication.date.isoformat()  
+            "medicineName": medication.medicineName,
+            "dosage": medication.dosage,  
+            "frequency": medication.frequency,
+            "date": medication.date.isoformat()
         })
     print("Appointment list: ", medications_list)
     return jsonify(medications_list), 200

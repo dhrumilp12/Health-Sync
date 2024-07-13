@@ -43,7 +43,7 @@ class AppointmentSchedule(Document):
     date = DateTimeField(required=True)
     
 class MedicationSchedule(Document): 
-    name = StringField(required=True)
+    medicineName = StringField(required=True)
     dosage = StringField(required=True)
     frequency = StringField(required=True)
     date = DateTimeField(required=True)
