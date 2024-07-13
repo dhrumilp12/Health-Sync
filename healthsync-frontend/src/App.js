@@ -19,6 +19,10 @@ import VolunteerDash from "./components/VolunteerDash";
 import VolunteerReq from "./components/VolunteerReq";
 import Landing from "./pages/Landing";
 import SOS from "./pages/SOS";
+import FoodCategories from "./pages/Food/Food";
+import FoodForm from "./pages/Food/FoodForm";
+import FoodSuggestForm from "./pages/Food/FoodSuggestForm";
+import FoodList from "./pages/Food/FoodList";
 
 function App() {
   const initialHealthData = [
@@ -149,6 +153,10 @@ function App() {
         />
         <Route path="/medication-list" element={<MedicationList />} />
         <Route path="/medication-form" element={<MedicationSchedule />} />
+        <Route path="/food" element={<FoodCategories />} />
+        <Route path="/meals" element={<FoodForm />} />
+        <Route path="/suggest-meals" element={<FoodSuggestForm />} />
+        <Route path="/food-list" element={<FoodList />} />
       </Routes>
     </>
   );
