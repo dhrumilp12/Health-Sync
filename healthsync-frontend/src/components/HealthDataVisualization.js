@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import Header from './Header/Header';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -41,10 +42,13 @@ const HealthDataVisualization = ({ healthData }) => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="p-4 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">Health Data Visualization</h2>
       <Line data={data} options={options} />
     </div>
+    </>
   );
 };
 

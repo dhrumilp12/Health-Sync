@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Logo from "../assets/Images/Logo.png";
+import Header from "./Header/Header";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ const Login = () => {
 
   return (
     <>
-      
+      <Header/>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 lg:mt-20">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
