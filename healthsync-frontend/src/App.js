@@ -8,6 +8,7 @@ import ChangePassword from "./components/ChangePassword";
 import DeleteAccount from "./components/DeleteAccount";
 import LogoutButton from "./components/LogoutButton";
 import SOS from "./pages/SOS";
+import ChatInterface from "./components/Chat_Interface";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/sos" element={<SOS />} />
+        <Route path="/chat" element={<ChatInterface />} />
       </Routes>
     </>
   );
