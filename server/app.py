@@ -11,6 +11,7 @@ from flask_cors import CORS
 import collections
 collections.Iterable = collections.abc.Iterable
 
+from routes.meals import meals_routes
 from routes.SOS import SOS_routes
 from routes.user import user_routes
 from routes.OpenAI import OpenAI_routes
@@ -35,6 +36,7 @@ jwt = JWTManager(app)
 app.register_blueprint(user_routes, url_prefix='/api')
 app.register_blueprint(OpenAI_routes, url_prefix='/api')
 app.register_blueprint(SOS_routes)
+app.register_blueprint(meals_routes, url_prefix='/api')
 
 TWILIO_ACCOUNT_SID=os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN=os.getenv("TWILIO_AUTH_TOKEN")
