@@ -7,9 +7,12 @@ from models.user import User,Medication,DoctorContact,EmergencyContact,Appointme
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
 from twilio.rest import Client
+import stripe
 
 TWILIO_ACCOUNT_SID=os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN=os.getenv("TWILIO_AUTH_TOKEN")
+STRIPE_SECONDARY_KEY=os.getenv("STRIPE_SECONDARY_KEY")
+stripe.api_key=STRIPE_SECONDARY_KEY
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 user_routes = Blueprint("user", __name__)
@@ -281,12 +284,41 @@ def getMedicationsList():
     print("Current time: ", current_time_only)  # Prints the current time
     
     # Compare the times
-    if timeGivenByUser <= current_time_only:
-        TO_NUMBER = os.getenv("TO_NUMBER")
-        FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
-        message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
-        print(message.body)
-    else:
-        print("It's not time for your medicine yet")
+    # if timeGivenByUser <= current_time_only:
+    #     TO_NUMBER = os.getenv("TO_NUMBER")
+    #     FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
+    #     message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
+    #     print(message.body)
+    # else:
+    #     print("It's not time for your medicine yet")
     
     return jsonify(medications_list), 200
+
+@user_routes.post('/create-checkout-session')
+def make_payment():
+    try:
+        data = request.get_json()
+        medicineName=data['medicineName']
+        amount = data['amount']  
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'inr',
+                        'product_data': {
+                            'name': medicineName,
+                        },
+                        'unit_amount': amount,  
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url='https://your-success-url.com',
+            cancel_url='https://your-cancel-url.com',
+        )
+        return jsonify({"msg": "Payment made successfully!!", "sessionId": session.id})
+    except stripe.error.StripeError as e:
+        return jsonify({"error": str(e)}), 400

@@ -16,14 +16,41 @@ import { useState } from "react";
 import ChatInterface from "./components/Chat_Interface";
 import AppointmentForm from "./components/Appointment/AppointmentForm";
 import AppointmentsList from "./components/Appointment/AppointmentsList";
+import MedicationList from "./components/Medication/MedicationList";
+import MedicationSchedule from "./components/Medication/MedicationSchedule";
 
 function App() {
   const initialHealthData = [
-    { date: '2024-07-01', heartRate: 72, bloodPressure: '120/80', notes: 'Feeling good.' },
-    { date: '2024-07-02', heartRate: 75, bloodPressure: '122/81', notes: 'Mild headache.' },
-    { date: '2024-07-03', heartRate: 70, bloodPressure: '118/79', notes: 'Went for a walk.' },
-    { date: '2024-07-04', heartRate: 80, bloodPressure: '125/85', notes: 'Slight chest pain.' },
-    { date: '2024-07-05', heartRate: 68, bloodPressure: '115/76', notes: 'Felt energetic.' },
+    {
+      date: "2024-07-01",
+      heartRate: 72,
+      bloodPressure: "120/80",
+      notes: "Feeling good.",
+    },
+    {
+      date: "2024-07-02",
+      heartRate: 75,
+      bloodPressure: "122/81",
+      notes: "Mild headache.",
+    },
+    {
+      date: "2024-07-03",
+      heartRate: 70,
+      bloodPressure: "118/79",
+      notes: "Went for a walk.",
+    },
+    {
+      date: "2024-07-04",
+      heartRate: 80,
+      bloodPressure: "125/85",
+      notes: "Slight chest pain.",
+    },
+    {
+      date: "2024-07-05",
+      heartRate: 68,
+      bloodPressure: "115/76",
+      notes: "Felt energetic.",
+    },
   ];
   const [healthData, setHealthData] = useState(initialHealthData);
 
@@ -44,11 +71,19 @@ function App() {
         <Route path="/dashboard/volunteer" element={<VolunteerDash />} />
         <Route path="/volunteer-req" element={<VolunteerReq />} />
         <Route path="/sos" element={<SOS />} />
-        <Route path="/health-input" element={<HealthDataInput addHealthData={addHealthData} />} />
-        <Route path="/health-visualization" element={<HealthDataVisualization healthData={healthData} />} />
+        <Route
+          path="/health-input"
+          element={<HealthDataInput addHealthData={addHealthData} />}
+        />
+        <Route
+          path="/health-visualization"
+          element={<HealthDataVisualization healthData={healthData} />}
+        />
         <Route path="/chat" element={<ChatInterface />} />
         <Route path="/schedule-appointment" element={<AppointmentForm />} />
         <Route path="/appointment-list" element={<AppointmentsList />} />
+        <Route path="/medication-list" element={<MedicationList />} />
+        <Route path="/medication-form" element={<MedicationSchedule />} />
       </Routes>
     </>
   );
