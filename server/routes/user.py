@@ -7,9 +7,12 @@ from models.user import User,Medication,DoctorContact,EmergencyContact,Appointme
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
 from twilio.rest import Client
+import stripe
 
 TWILIO_ACCOUNT_SID=os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN=os.getenv("TWILIO_AUTH_TOKEN")
+STRIPE_SECONDARY_KEY=os.getenv("STRIPE_SECONDARY_KEY")
+stripe.api_key=STRIPE_SECONDARY_KEY
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 user_routes = Blueprint("user", __name__)
@@ -290,3 +293,32 @@ def getMedicationsList():
         print("It's not time for your medicine yet")
     
     return jsonify(medications_list), 200
+
+@user_routes.post('/create-checkout-session')
+def make_payment():
+    try:
+        # Extract the amount from the request
+        data = request.get_json()
+        amount = 100  # assuming the amount is passed in the request body
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'inr',
+                        'product_data': {
+                            'name': 'Custom Payment',
+                        },
+                        'unit_amount': amount * 100,  # amount in the smallest currency unit
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url='http://localhost:3000/success',
+            cancel_url='http://localhost:3000/cancel',
+        )
+        return jsonify({"msg": "Payment made successfully!!", "sessionId": session.id})
+    except stripe.error.StripeError as e:
+        return jsonify({"error": str(e)}), 400
