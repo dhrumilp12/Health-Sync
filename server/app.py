@@ -5,6 +5,12 @@ from mongoengine import connect
 from dotenv import load_dotenv
 from mongoengine import connect
 from flask_cors import CORS
+
+
+
+import collections
+collections.Iterable = collections.abc.Iterable
+
 from routes.SOS import SOS_routes
 from routes.user import user_routes
 from routes.OpenAI import OpenAI_routes
