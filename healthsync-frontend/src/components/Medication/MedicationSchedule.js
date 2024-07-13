@@ -6,6 +6,7 @@ const MedicationSchedule = () => {
   const [dosage, setDosage] = useState("");
   const [frequency, setFrequency] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 16));
+  const [reminderTimes, setReminderTimes] = useState([]);
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
@@ -92,6 +93,24 @@ const MedicationSchedule = () => {
               name="date"
               onChange={(e) => setDate(e.target.value)}
               value={date}
+              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="reminderTimes"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Reminder Times
+            </label>
+            <input
+              type="time"
+              id="reminderTimes"
+              name="reminderTimes"
+              onChange={(e) =>
+                setReminderTimes([...reminderTimes, e.target.value])
+              }
+              value={reminderTimes}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>

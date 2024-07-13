@@ -47,3 +47,4 @@ class MedicationSchedule(Document):
     dosage = StringField(required=True)
     frequency = StringField(required=True)
     date = DateTimeField(required=True)
+    reminderTimes = ListField(StringField())
