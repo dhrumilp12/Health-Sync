@@ -6,7 +6,7 @@ const AppointmentsList = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/api/get-appointments-list")
+      .get("http://127.0.0.1:5000/api/get-medications")
       .then((res) => {
         setAppointments(res.data);
       })
@@ -14,6 +14,7 @@ const AppointmentsList = () => {
         console.log(err);
       });
   }, []);
+  console.log(appointments);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

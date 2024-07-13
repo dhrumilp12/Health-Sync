@@ -9,6 +9,7 @@ import surgery from "../../assets/Images/Icons/Surgery.png";
 import urology from "../../assets/Images/Icons/Urology.png";
 
 import Banner1 from "../../assets/Images/banner1.png";
+import CareTaker from "../../assets/Images/caretaker.jpg";
 import Banner2 from "../../assets/Images/banner2.png";
 
 import doc1 from "../../assets/Images/Doctors/doc1.png";
@@ -22,7 +23,7 @@ import user3 from "../../assets/Images/Users/user3.jpg";
 
 import logo from "../../assets/Images/Logo.png";
 
-export const links = ["Home", "Doctors", "Services", "Reviews"];
+export const links = ["Home", "Doctors", "Services"];
 
 export const descNums = [
   {
@@ -31,26 +32,22 @@ export const descNums = [
   },
   {
     num: "20k+",
-    text: "Happy Patients",
+    text: "Happy Elders",
   },
   {
     num: "24/7",
     text: "Emergency Service",
   },
   {
-    num: "100+",
-    text: "Operation Theatres",
-  },
-  {
     num: "850+",
-    text: "Hospital Rooms",
+    text: "Volunteers",
   },
 ];
 
 export const ServicesData = [
   {
     img: neurology,
-    title: "Neurology",
+    title: "Appointments",
     id: "neurology",
     heading: "Neurology Department",
     texts: [
@@ -65,7 +62,7 @@ export const ServicesData = [
   },
   {
     img: cardiology,
-    title: "Cardiology",
+    title: "Reminders",
     id: "cardiology",
     heading: "Cardiology Department",
     texts: [
@@ -82,7 +79,7 @@ export const ServicesData = [
   },
   {
     img: orthopedics,
-    title: "Orthopedics",
+    title: "Monitoring",
     id: "orthopedics",
     heading: "Orthopedics Department",
     texts: [
@@ -95,24 +92,24 @@ export const ServicesData = [
       "Customized orthopedic care plans",
     ],
   },
-  {
-    img: surgery,
-    title: "Surgery",
-    id: "surgery",
-    heading: "Surgery Department",
-    texts: [
-      "Minimally invasive and laparoscopic surgery",
-      "Gastrointestinal surgery and endoscopy",
-      "Plastic and reconstructive surgery",
-      "Cancer and tumor resection",
-      "Post-operative care and recovery",
-      "Surgical consultations",
-      "Emergency surgical interventions",
-    ],
-  },
+  // {
+  //   img: surgery,
+  //   title: "Surgery",
+  //   id: "surgery",
+  //   heading: "Surgery Department",
+  //   texts: [
+  //     "Minimally invasive and laparoscopic surgery",
+  //     "Gastrointestinal surgery and endoscopy",
+  //     "Plastic and reconstructive surgery",
+  //     "Cancer and tumor resection",
+  //     "Post-operative care and recovery",
+  //     "Surgical consultations",
+  //     "Emergency surgical interventions",
+  //   ],
+  // },
   {
     img: dentistry,
-    title: "Dentistry",
+    title: "Education",
     id: "dentistry",
     heading: "Dentistry Department",
     texts: [
@@ -127,7 +124,7 @@ export const ServicesData = [
   },
   {
     img: radiology,
-    title: "Radiology",
+    title: "Telemedicine",
     id: "radiology",
     heading: "Radiology Department",
     texts: [
@@ -142,7 +139,7 @@ export const ServicesData = [
   },
   {
     img: urology,
-    title: "Urology",
+    title: "Support",
     id: "urology",
     heading: "Urology Department",
     texts: [
@@ -188,43 +185,48 @@ export const ServicesData = [
 ];
 
 export const Banner1Data = {
-  heading: "We Are Always Here To Ensure Best Medical Treatment",
+  heading: "We Are Always Here to Ensure the Best Health and Well-Being for Our Elderly Community",
   texts: [
-    "Easy make appointment",
-    "Top specialist doctors",
-    "24/7 service",
-    "Discount for all medical treatments",
-    "Enrolment is quick and easy",
-  ],
-  img: Banner1,
+    "Easy Doctor Appointment Scheduling",
+    "Personalized Medication Reminders",
+    "Health Monitoring and Alerts",
+    "Interactive Health Education",
+    "Telemedicine Consultations",
+    "24/7 Emergency Support",
+    "Caregiver Coordination",
+    "Virtual Social Engagement",
+    "Mental Health Support",
+    "AI-Powered Health Insights",
+],
+  img: CareTaker,
 };
 
 export const DoctorsData = {
-  heading: "Meet Our Specialists",
+  //heading: "Meet Our Specialists",
   doctors: [
-    {
-      img: doc1,
-      name: "Dr. John Smith",
-      job: "Cardiologist",
-    },
-    {
-      img: doc2,
-      name: "Dr. Kristin Watson",
-      job: "Dentist",
-    },
-    {
-      img: doc3,
-      name: "Dr. Robert Flores",
-      job: "Surgeon",
-    },
-    {
-      img: doc4,
-      name: "Dr. Katherine Allen",
-      job: "Neurologist",
-    },
+    // {
+    //   img: doc1,
+    //   name: "Dr. John Smith",
+    //   job: "Cardiologist",
+    // },
+    // {
+    //   img: doc2,
+    //   name: "Dr. Kristin Watson",
+    //   job: "Dentist",
+    // },
+    // {
+    //   img: doc3,
+    //   name: "Dr. Robert Flores",
+    //   job: "Surgeon",
+    // },
+    // {
+    //   img: doc4,
+    //   name: "Dr. Katherine Allen",
+    //   job: "Neurologist",
+    // },
   ],
   heading2: "Who Are We?",
-  desc: "A collaborative hospital service website is a digital platform that brings together healthcare professionals, patients and administrators to streamline and enganhe the delivery of healthcare services. This innovative platform allows for seamless communication and coordination among healthcare teams, enabling them to provide more efficient and personalized care to patients.",
+  desc: "We are a dedicated platform focused on providing comprehensive assistance to the elderly, ensuring their health and well-being. Our innovative application connects elderly individuals with healthcare professionals, caregivers, and volunteers to streamline and enhance the delivery of support services. With seamless communication and coordination, we enable personalized care, timely medical assistance, and meaningful social engagement, all aimed at improving the quality of life for our elderly community.",
   img: Banner2,
 };
 

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-
+import Logo from "../assets/Images/Logo.png";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -40,7 +40,7 @@ const Login = () => {
         throw new Error(data.msg || 'Login failed');
     }
       console.log("Access Token:", data.access_token);
-      alert('Login successful! Check the console for the access token.');
+      // alert('Login successful! Check the console for the access token.');
       // Redirect user or store the token depending on your application setup
     } catch (err) {
       console.error('Login error:', err.message);
@@ -53,11 +53,11 @@ const Login = () => {
       
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 lg:mt-20">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Your Company"
-            src="https://cdn-icons-png.freepik.com/512/8495/8495174.png"
-            className="mx-auto h-10 w-auto"
-          />
+        <img
+          alt="HealthSync Logo"
+          src={Logo}
+          className="mx-auto h-10 w-auto rounded-md" 
+        />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign in to your account
           </h2>
@@ -89,7 +89,7 @@ const Login = () => {
                   Password
                 </label>
                 <div className="text-sm">
-                  <Link to="/forgot-password" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <Link to="/change-password" className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
                   </Link>
                 </div>
