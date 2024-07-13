@@ -44,6 +44,7 @@ const DynamicFieldArray = ({ list, setList, fields, title }) => {
 
 const Signup = () => {
   const [formData, setFormData] = useState({
+    role: "elder", // Default to elder person
     username: "",
     email: "",
     password: "",
@@ -52,16 +53,17 @@ const Signup = () => {
     dateOfBirth: "",
     gender: "",
     phoneNumber: "",
-    medicalConditions: [],
-    medications: [{ name: "", dosage: "", frequency: "", reminderTimes: [""] }],
-    doctorContacts: [{ name: "", specialization: "", contactNumber: "" }],
-    emergencyContacts: [{ name: "", relation: "", contactNumber: "" }],
+    medicalConditions: "",
+    medications: "",
+    doctorContacts: "",
+    emergencyContacts: "",
     sosLocation: "",
     languagePreference: "English (US)",
     notificationEnabled: true,
   });
 
   const requiredFields = [
+    "role",
     "username",
     "email",
     "password",
@@ -69,7 +71,6 @@ const Signup = () => {
     "lastName",
     "dateOfBirth",
   ];
-
   const languages = [
     "English (US)",
     "Español (Spain)",
@@ -90,27 +91,11 @@ const Signup = () => {
     }));
   };
 
-  const parseJsonInput = (input) => {
-    try {
-      return JSON.parse(input);
-    } catch {
-      return [];
-    }
-  };
-
-  const handleChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    if (type === "checkbox") {
-      setFormData({ ...formData, [id]: checked });
-    } else {
-      setFormData({ ...formData, [id]: value });
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
   
     const formattedData = {
+      role: formData.role,
       username: formData.username,
       email: formData.email,
       password: formData.password,
@@ -119,28 +104,49 @@ const Signup = () => {
       date_of_birth: formData.dateOfBirth,
       gender: formData.gender,
       phone_number: formData.phoneNumber,
-      medical_conditions: formData.medicalConditions.map(item => item.condition), // Assuming medicalConditions is an array of objects with a condition field
-      medications: formData.medications,
-      doctor_contacts: formData.doctorContacts,
-      emergency_contacts: formData.emergencyContacts,
-      sos_location: formData.sosLocation,
-      language_preference: formData.languagePreference,
-      notification_enabled: formData.notificationEnabled,
+      medicalConditions:
+        formData.role === "elder"
+          ? formData.medicalConditions.split(",").map((item) => item.trim())
+          : [],
+      medications:
+        formData.role === "elder"
+          ? formData.medications
+            ? JSON.parse(formData.medications)
+            : []
+          : [],
+      doctorContacts:
+        formData.role === "elder"
+          ? formData.doctorContacts
+            ? JSON.parse(formData.doctorContacts)
+            : []
+          : [],
+      emergencyContacts:
+        formData.role === "elder"
+          ? formData.emergencyContacts
+            ? JSON.parse(formData.emergencyContacts)
+            : []
+          : [],
+      sosLocation: formData.sosLocation,
+      languagePreference: formData.languagePreference,
+      notificationEnabled: formData.notificationEnabled,
     };
-  
-    console.log("Formatted Data to send:", formattedData);
-  
+
     try {
       const response = await fetch("http://localhost:5000/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formattedData),
       });
   
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem("accessToken", data.access_token);
-        alert("Registration successful!");
+        alert(
+          "Registration successful! Check the console for more information."
+        );
+        console.log(data);
       } else {
         throw new Error(data.msg || "Registration failed");
       }
@@ -166,9 +172,29 @@ const Signup = () => {
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
           Create a New Account
         </h2>
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-        {Object.keys(formData).filter(key => !Array.isArray(formData[key])).map((key) => 
-            key !== "notificationEnabled" && key !== "languagePreference" ? (
+        <form onSubmit={onSubmit} className="mt-8 space-y-6">
+          <div className="rounded-md shadow-sm -space-y-px">
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Role
+            </label>
+            <select
+              id="role"
+              name="role"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              value={formData.role}
+              onChange={onChange}
+            >
+              <option value="elder">Elder Person</option>
+              <option value="volunteer">Volunteer</option>
+            </select>
+          </div>
+          {Object.keys(formData).map((key) =>
+            key !== "notificationEnabled" &&
+            key !== "languagePreference" &&
+            key !== "role" ? (
               <div key={key} className="rounded-md shadow-sm -space-y-px">
                 <label
                   htmlFor={key}
@@ -185,8 +211,6 @@ const Signup = () => {
                       ? "password"
                       : key === "dateOfBirth"
                       ? "date"
-                      : key === "sosLocation"
-                      ? "text"
                       : "text"
                   }
                   id={key}
@@ -223,49 +247,24 @@ const Signup = () => {
                   ))}
                 </select>
               </div>
-            ) : (
-              <div key={key} className="flex items-center">
-                <input
-                  id={key}
-                  name={key}
-                  type="checkbox"
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  checked={formData[key]}
-                  onChange={onChange}
-                />
-                <label
-                  htmlFor={key}
-                  className="ml-2 block text-sm text-gray-900"
-                >
-                  Enable Notifications
-                </label>
-              </div>
-            )
+            ) : null
           )}
-          <DynamicFieldArray
-          list={formData.medicalConditions}
-          setList={(newList) => setFormData({ ...formData, medicalConditions: newList })}
-          fields={["condition"]}
-          title="Medical Conditions"
-        />
-          <DynamicFieldArray
-          list={formData.medications}
-          setList={(newList) => setFormData({ ...formData, medications: newList })}
-          fields={["name", "dosage", "frequency", "reminderTimes"]}
-          title="Medications"
-        />
-        <DynamicFieldArray
-          list={formData.doctorContacts}
-          setList={(newList) => setFormData({ ...formData, doctorContacts: newList })}
-          fields={["name", "specialization", "contactNumber"]}
-          title="Doctor Contacts"
-        />
-        <DynamicFieldArray
-          list={formData.emergencyContacts}
-          setList={(newList) => setFormData({ ...formData, emergencyContacts: newList })}
-          fields={["name", "relation", "contactNumber"]}
-          title="Emergency Contacts"
-        />
+          <div className="flex items-center">
+            <input
+              id="notificationEnabled"
+              name="notificationEnabled"
+              type="checkbox"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              checked={formData.notificationEnabled}
+              onChange={onChange}
+            />
+            <label
+              htmlFor="notificationEnabled"
+              className="ml-2 block text-sm text-gray-900"
+            >
+              Enable Notifications
+            </label>
+          </div>
           <button
             type="submit"
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
