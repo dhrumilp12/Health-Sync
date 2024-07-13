@@ -1,10 +1,16 @@
 import logging
 import re
+import os
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models.user import User,Medication,DoctorContact,EmergencyContact,AppointmentSchedule
+from models.user import User,Medication,DoctorContact,EmergencyContact,AppointmentSchedule,MedicationSchedule
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta,datetime
+from twilio.rest import Client
+
+TWILIO_ACCOUNT_SID=os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN=os.getenv("TWILIO_AUTH_TOKEN")
+client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 user_routes = Blueprint("user", __name__)
 
@@ -229,3 +235,58 @@ def getAppointmentsList():
         })
     print("Appointment list: ", appointments_list)
     return jsonify(appointments_list), 200
+
+@user_routes.post('/schedule-medication')
+def scheduleMedication(): 
+    # Implement scheduling logic and reminder notifications.
+    data=request.get_json()
+    medicineName = data.get('medicineName')
+    dosage = data.get('dosage')
+    frequency = data.get('frequency')
+    date = data.get('date')
+    reminderTimes = data.get('reminderTimes')
+    print("Checking all data: ", medicineName, dosage, frequency, date,reminderTimes)
+    # Adding the fields - Morning (after breakfast), Night (after dinner)
+    newMedication = MedicationSchedule(
+        medicineName=medicineName,
+        dosage=dosage,
+        frequency=frequency,
+        date=date,
+        reminderTimes=reminderTimes
+    )
+    newMedication.save()
+    return jsonify({"msg": "Medication successfully scheduled"}), 200
+
+@user_routes.get('/get-medications')
+def getMedicationsList():
+    medications = MedicationSchedule.objects()
+    medications_list = []
+    for medication in medications:
+        medications_list.append({
+            "medicineName": medication.medicineName,
+            "dosage": medication.dosage,  
+            "frequency": medication.frequency,
+            "date": medication.date.isoformat(),
+            "reminderTimes": medication.reminderTimes
+        })
+    # Extract the time from the first medication's date
+    time = medications_list[0]["date"]
+    datetime_obj = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
+    timeGivenByUser = datetime_obj.time()
+    print("Time given by the user: ", timeGivenByUser)
+    
+    # Get the current time
+    currenttime = datetime.now()
+    current_time_only = currenttime.time()
+    print("Current time: ", current_time_only)  # Prints the current time
+    
+    # Compare the times
+    if timeGivenByUser <= current_time_only:
+        TO_NUMBER = os.getenv("TO_NUMBER")
+        FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
+        message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
+        print(message.body)
+    else:
+        print("It's not time for your medicine yet")
+    
+    return jsonify(medications_list), 200
