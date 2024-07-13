@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
+import Header from "../Header/Header";
 
 const MedicationList = () => {
   const [medications, setMedications] = useState([]);
@@ -49,6 +50,8 @@ const MedicationList = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="mx-auto w-3/4 p-4 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">
@@ -120,6 +123,8 @@ const MedicationList = () => {
         </div>
       </div>
     </div>
+    </>
+
   );
 };
 

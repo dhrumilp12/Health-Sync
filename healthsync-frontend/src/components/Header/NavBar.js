@@ -1,10 +1,11 @@
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useMediaQuery from "../../Hooks/useMediaQuery";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../UI/Button";
 import Links from "./Links";
+
 
 const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
   const [isMenuToggled, setIsMenuToggled] = useState(false);
@@ -13,6 +14,15 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAppointmentDropdownOpen, setAppointmentIsDropdownOpen] =
     useState(false);
+
+    const navigate = useNavigate();
+
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    if (selectedValue) {
+      navigate(selectedValue);
+    }
+  };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -30,10 +40,27 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
             />
             <Link
               className={`${"text-primary mt-0.5 border-[#2b7dad]"} transition font-bold text-lg duration-500 hover:text-[#2b7dad]`}
+              to="/chat"
+            >
+              Chat
+            </Link>
+            <Link
+              className={`${"text-primary mt-0.5 border-[#2b7dad]"} transition font-bold text-lg duration-500 hover:text-[#2b7dad]`}
               to="/sos"
             >
               SOS
             </Link>
+            <select
+      className={`${"text-primary mt-0.5 border-[#2b7dad]"} transition font-bold text-lg duration-500 hover:text-[#2b7dad] bg-transparent`}
+      onChange={handleSelectChange}
+    >
+      <option value="">Medication & Food</option>
+      <option value="/medication-list">Medication List</option>
+      <option value="/medication-form">Medication Form</option>
+      <option value="/food">Food recommendation</option>
+      <option value="/meals">Meals</option>
+      <option value="/food-list">Food List</option>
+    </select>
           </div>
           <Link to="/health-input">
             <Button>Health Input</Button>
@@ -150,6 +177,12 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Change Password
+                  </Link>
+                  <Link
+                    to="/delete-account"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Delete Account
                   </Link>
                   <button
                     onClick={handleLogout}

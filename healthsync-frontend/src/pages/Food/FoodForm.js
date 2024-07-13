@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+
+import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header/Header";
+
 
 const FoodForm = () => {
   const navigate = useNavigate();
@@ -59,6 +62,8 @@ const FoodForm = () => {
   };
 
   return (
+    <>
+      <Header />
     <div className="max-w-xl mx-auto mt-10">
       <h1 className="text-2xl font-semibold text-center mb-6">Add Your Meals</h1>
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -100,6 +105,9 @@ const FoodForm = () => {
         </button>
       </form>
     </div>
+
+    </>
+
   );
 };
 

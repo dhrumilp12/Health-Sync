@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, TextField, Button, Typography, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
+import { AuthContext } from '../context/AuthContext';
 
 const DeleteAccount = () => {
     
@@ -11,6 +12,7 @@ const DeleteAccount = () => {
     const handleChange = (event) => {
         setPassword(event.target.value);
     };
+    const {setIsLoggedIn} = useContext(AuthContext)
 
     const handleDelete = async () => {
         setLoading(true);
@@ -30,6 +32,7 @@ const DeleteAccount = () => {
             if (!response.ok) {
                 throw new Error(data.msg || 'Failed to delete account');
             }
+            setIsLoggedIn(false);
             // Navigate or refresh the page here as needed
             window.location = '/login'; // Redirect to login or home page after account deletion
         } catch (err) {

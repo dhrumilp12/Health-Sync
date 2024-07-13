@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Header from "../../components/Header/Header";
 
 const FoodList = () => {
   const [food, setFood] = useState([]);
@@ -81,6 +82,8 @@ const FoodList = () => {
   
 
   return (
+    <>
+    <Header />
     <div style={styles.container}>
       <h1 style={styles.header}>My Meals</h1>
       {food.length > 0 ? (
@@ -141,6 +144,10 @@ const FoodList = () => {
         <p style={styles.text}>No meals found. Start adding some!</p>
       )}
     </div>
+
+      
+    </>
+
   );
 };
 
