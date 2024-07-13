@@ -151,12 +151,54 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/medication-list" element={<MedicationList />} />
-        <Route path="/medication-form" element={<MedicationSchedule />} />
-        <Route path="/food" element={<FoodCategories />} />
-        <Route path="/meals" element={<FoodForm />} />
-        <Route path="/suggest-meals" element={<FoodSuggestForm />} />
-        <Route path="/food-list" element={<FoodList />} />
+        <Route
+          path="/medication-list"
+          element={
+            <ProtectedRoute>
+              <MedicationList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/medication-form"
+          element={
+            <ProtectedRoute>
+              <MedicationSchedule />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/food"
+          element={
+            <ProtectedRoute>
+              <FoodCategories />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meals"
+          element={
+            <ProtectedRoute>
+              <FoodForm />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/suggest-meals"
+          element={
+            <ProtectedRoute>
+              <FoodSuggestForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/food-list"
+          element={
+            <ProtectedRoute>
+              <FoodList />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

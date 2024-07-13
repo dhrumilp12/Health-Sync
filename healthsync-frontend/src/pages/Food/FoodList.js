@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Header from "../../components/Header/Header";
 
 const FoodList = () => {
   const [food, setFood] = useState([]);
@@ -17,17 +18,22 @@ const FoodList = () => {
   }, []);
 
   return (
-    <div>
-      {food.map((meal, index) => (
-        <div key={index}>
-          <p>ID: {meal._id.$oid}</p>
-          <p>User ID: {meal.user.$oid}</p>
-          <p>Date: {new Date(meal.date.$date).toLocaleDateString()}</p>
-          <p>Created At: {new Date(meal.created_at.$date).toLocaleString()}</p>
-          <hr />
-        </div>
-      ))}
-    </div>
+    <>
+      <Header />
+      <div>
+        {food.map((meal, index) => (
+          <div key={index}>
+            <p>ID: {meal._id.$oid}</p>
+            <p>User ID: {meal.user.$oid}</p>
+            <p>Date: {new Date(meal.date.$date).toLocaleDateString()}</p>
+            <p>
+              Created At: {new Date(meal.created_at.$date).toLocaleString()}
+            </p>
+            <hr />
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
