@@ -41,6 +41,8 @@ app.register_blueprint(meals_routes, url_prefix='/api')
 TWILIO_ACCOUNT_SID=os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN=os.getenv("TWILIO_AUTH_TOKEN")
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+print("Account SID: ",TWILIO_ACCOUNT_SID)
+print("Auth Token: ",TWILIO_AUTH_TOKEN)
 
 @app.route('/')
 def home():

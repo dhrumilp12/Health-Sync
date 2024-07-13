@@ -17,6 +17,8 @@ import ChatInterface from "./components/Chat_Interface";
 import AppointmentForm from "./components/Appointment/AppointmentForm";
 import AppointmentsList from "./components/Appointment/AppointmentsList";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MedicationList from "./components/Medication/MedicationList";
+import MedicationSchedule from "./components/Medication/MedicationSchedule";
 
 function App() {
   const initialHealthData = [
@@ -145,6 +147,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/medication-list" element={<MedicationList />} />
+        <Route path="/medication-form" element={<MedicationSchedule />} />
       </Routes>
     </>
   );
