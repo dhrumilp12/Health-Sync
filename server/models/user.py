@@ -42,6 +42,11 @@ class AppointmentSchedule(Document):
     doctorName = StringField(required=True)
     date = DateTimeField(required=True)
 
+
+class Ingredient(EmbeddedDocument):
+    name = StringField(required=True)
+    quantity = FloatField(required=True)
+    unit = StringField(required=True)
 class FoodItem(EmbeddedDocument):
     name = StringField(required=True)
     calories = FloatField(required=True, min_value=0)
@@ -49,6 +54,7 @@ class FoodItem(EmbeddedDocument):
     carbs = FloatField(default=0.0, min_value=0)
     fats = FloatField(default=0.0, min_value=0)
     fiber = FloatField(default=0.0, min_value=0)  # Additional nutritional information
+    ingredients = ListField(EmbeddedDocumentField(Ingredient))  # List of ingredients for each food item
 
     def clean(self):
         """ Ensure that total macronutrients do not exceed total calories unexpectedly """
@@ -60,3 +66,5 @@ class Meal(Document):
     date = DateTimeField(required=True)
     meals = ListField(EmbeddedDocumentField(FoodItem))
     created_at = DateTimeField(default=datetime.utcnow)  # Timestamp of when the meal was logged
+
+

@@ -156,3 +156,4 @@ def process_langchain_query(question, email, components):
         response_content = "Error processing response."
 
     return response_content
+
