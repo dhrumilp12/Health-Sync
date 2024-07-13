@@ -14,43 +14,45 @@ const MedicationList = () => {
         console.log(err);
       });
   }, []);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const handleSubmit = async (medicineName) => {
     const stripe = await loadStripe(
       "pk_test_51LCnRQSJSsOC2eKt1uhfUNxQU5bunGdtuP2dSRxFkoWYSLTuxCSTJVKMJZ0SiIajvoJb9JvgrMIF7VepheZ4Glhz00mbaU5Efs"
     );
-    const medicineName = medications.medicineName;
     axios
-      .post("http://localhost:5000/api/create-checkout-session", medicineName, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        "http://127.0.0.1:5000/api/create-checkout-session",
+        { medicineName, amount: 1000 },
+        {
+          // Adjust amount accordingly
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         if (res.status === 200) {
-          console.log(res.data); // Ensure you're logging the actual response data
-
-          const sessionId = res.data.id; // Assuming your response data has an 'id' field
-          console.log(sessionId);
-          const result = stripe.redirectToCheckout({
-            sessionId: sessionId,
-          });
+          const sessionId = res.data.sessionId;
+          const result = stripe.redirectToCheckout({ sessionId });
 
           if (result.error) {
             console.error(result.error.message);
           }
+        } else {
+          console.error(res.data.error);
+          alert(res.data.error); // Display the error to the user
         }
       })
       .catch((err) => {
         console.error("Error creating checkout session:", err);
       });
   };
-  console.log(medications);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="mx-auto w-3/4 p-4 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">
-          Appointments List
+          Medications List
         </h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -60,25 +62,25 @@ const MedicationList = () => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  date
+                  Date
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  dosage
+                  Dosage
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  frequency
+                  Frequency
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  medicineName
+                  Medicine Name
                 </th>
                 <th
                   scope="col"
@@ -106,7 +108,7 @@ const MedicationList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <button
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={handleSubmit}
+                      onClick={() => handleSubmit(appointment.medicineName)}
                     >
                       Reorder
                     </button>

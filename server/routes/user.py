@@ -284,22 +284,22 @@ def getMedicationsList():
     print("Current time: ", current_time_only)  # Prints the current time
     
     # Compare the times
-    if timeGivenByUser <= current_time_only:
-        TO_NUMBER = os.getenv("TO_NUMBER")
-        FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
-        message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
-        print(message.body)
-    else:
-        print("It's not time for your medicine yet")
+    # if timeGivenByUser <= current_time_only:
+    #     TO_NUMBER = os.getenv("TO_NUMBER")
+    #     FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
+    #     message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
+    #     print(message.body)
+    # else:
+    #     print("It's not time for your medicine yet")
     
     return jsonify(medications_list), 200
 
 @user_routes.post('/create-checkout-session')
 def make_payment():
     try:
-        # Extract the amount from the request
         data = request.get_json()
-        amount = 100  # assuming the amount is passed in the request body
+        medicineName=data['medicineName']
+        amount = data['amount']  
 
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -308,16 +308,16 @@ def make_payment():
                     'price_data': {
                         'currency': 'inr',
                         'product_data': {
-                            'name': 'Custom Payment',
+                            'name': medicineName,
                         },
-                        'unit_amount': amount * 100,  # amount in the smallest currency unit
+                        'unit_amount': amount,  
                     },
                     'quantity': 1,
                 },
             ],
             mode='payment',
-            success_url='http://localhost:3000/success',
-            cancel_url='http://localhost:3000/cancel',
+            success_url='https://your-success-url.com',
+            cancel_url='https://your-cancel-url.com',
         )
         return jsonify({"msg": "Payment made successfully!!", "sessionId": session.id})
     except stripe.error.StripeError as e:
