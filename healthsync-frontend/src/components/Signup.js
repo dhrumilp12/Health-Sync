@@ -1,5 +1,47 @@
 import React, { useState } from "react";
 
+// Helper component to handle list of dictionaries (for medications, contacts, etc.)
+const DynamicFieldArray = ({ list, setList, fields, title }) => {
+  const handleAdd = () => {
+    const newItem = fields.reduce((obj, field) => ({ ...obj, [field]: "" }), {});
+    setList([...list, newItem]);
+  };
+
+  const handleRemove = index => {
+    const newList = [...list];
+    newList.splice(index, 1);
+    setList(newList);
+  };
+
+  const handleChange = (index, field, value) => {
+    const newList = [...list];
+    newList[index][field] = value;
+    setList(newList);
+  };
+
+  return (
+    <div>
+      <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">{title}</h3>
+      {list.map((item, index) => (
+        <div key={index} className="flex items-center space-x-3 mb-3">
+          {fields.map(field => (
+            <input
+              key={field}
+              type="text"
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              value={item[field]}
+              onChange={(e) => handleChange(index, field, e.target.value)}
+              className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+          ))}
+          <button onClick={() => handleRemove(index)} className="py-1 px-3 bg-red-500 text-white rounded">Remove</button>
+        </div>
+      ))}
+      <button onClick={handleAdd} className="py-1 px-3 bg-blue-500 text-white rounded">Add</button>
+    </div>
+  );
+};
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -10,10 +52,10 @@ const Signup = () => {
     dateOfBirth: "",
     gender: "",
     phoneNumber: "",
-    medicalConditions: "",
-    medications: "",
-    doctorContacts: "",
-    emergencyContacts: "",
+    medicalConditions: [],
+    medications: [{ name: "", dosage: "", frequency: "", reminderTimes: [""] }],
+    doctorContacts: [{ name: "", specialization: "", contactNumber: "" }],
+    emergencyContacts: [{ name: "", relation: "", contactNumber: "" }],
     sosLocation: "",
     languagePreference: "English (US)",
     notificationEnabled: true,
@@ -56,8 +98,18 @@ const Signup = () => {
     }
   };
 
-  const onSubmit = async (e) => {
+  const handleChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setFormData({ ...formData, [id]: checked });
+    } else {
+      setFormData({ ...formData, [id]: value });
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
     const formattedData = {
       username: formData.username,
       email: formData.email,
@@ -67,33 +119,28 @@ const Signup = () => {
       date_of_birth: formData.dateOfBirth,
       gender: formData.gender,
       phone_number: formData.phoneNumber,
-      medicalConditions: formData.medicalConditions
-        .split(",")
-        .map((item) => item.trim()),
-      medications: parseJsonInput(formData.medications),
-      doctorContacts: parseJsonInput(formData.doctorContacts),
-      emergencyContacts: parseJsonInput(formData.emergencyContacts),
-      sosLocation: formData.sosLocation,
-      languagePreference: formData.languagePreference,
-      notificationEnabled: formData.notificationEnabled,
+      medical_conditions: formData.medicalConditions.map(item => item.condition), // Assuming medicalConditions is an array of objects with a condition field
+      medications: formData.medications,
+      doctor_contacts: formData.doctorContacts,
+      emergency_contacts: formData.emergencyContacts,
+      sos_location: formData.sosLocation,
+      language_preference: formData.languagePreference,
+      notification_enabled: formData.notificationEnabled,
     };
-
+  
     console.log("Formatted Data to send:", formattedData);
-
+  
     try {
       const response = await fetch("http://localhost:5000/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem("accessToken", data.access_token);
         alert("Registration successful!");
-        console.log(data);
       } else {
         throw new Error(data.msg || "Registration failed");
       }
@@ -102,6 +149,7 @@ const Signup = () => {
       alert("Registration failed. Please try again.");
     }
   };
+  
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -118,8 +166,8 @@ const Signup = () => {
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
           Create a New Account
         </h2>
-        <form onSubmit={onSubmit} className="mt-8 space-y-6">
-          {Object.keys(formData).map((key) =>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        {Object.keys(formData).filter(key => !Array.isArray(formData[key])).map((key) => 
             key !== "notificationEnabled" && key !== "languagePreference" ? (
               <div key={key} className="rounded-md shadow-sm -space-y-px">
                 <label
@@ -194,6 +242,30 @@ const Signup = () => {
               </div>
             )
           )}
+          <DynamicFieldArray
+          list={formData.medicalConditions}
+          setList={(newList) => setFormData({ ...formData, medicalConditions: newList })}
+          fields={["condition"]}
+          title="Medical Conditions"
+        />
+          <DynamicFieldArray
+          list={formData.medications}
+          setList={(newList) => setFormData({ ...formData, medications: newList })}
+          fields={["name", "dosage", "frequency", "reminderTimes"]}
+          title="Medications"
+        />
+        <DynamicFieldArray
+          list={formData.doctorContacts}
+          setList={(newList) => setFormData({ ...formData, doctorContacts: newList })}
+          fields={["name", "specialization", "contactNumber"]}
+          title="Doctor Contacts"
+        />
+        <DynamicFieldArray
+          list={formData.emergencyContacts}
+          setList={(newList) => setFormData({ ...formData, emergencyContacts: newList })}
+          fields={["name", "relation", "contactNumber"]}
+          title="Emergency Contacts"
+        />
           <button
             type="submit"
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
