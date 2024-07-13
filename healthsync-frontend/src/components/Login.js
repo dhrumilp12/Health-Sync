@@ -40,7 +40,7 @@ const Login = () => {
         throw new Error(data.msg || 'Login failed');
     }
       console.log("Access Token:", data.access_token);
-      alert('Login successful! Check the console for the access token.');
+      // alert('Login successful! Check the console for the access token.');
       // Redirect user or store the token depending on your application setup
     } catch (err) {
       console.error('Login error:', err.message);
@@ -89,7 +89,7 @@ const Login = () => {
                   Password
                 </label>
                 <div className="text-sm">
-                  <Link to="/forgot-password" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <Link to="/change-password" className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
                   </Link>
                 </div>

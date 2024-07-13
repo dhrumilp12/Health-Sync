@@ -2,7 +2,6 @@ export const SelectedPage = {
   Home: "home",
   Doctors: "doctors",
   Services: "services",
-  Reviews: "reviews",
 };
 
 export const SelectedService = {
