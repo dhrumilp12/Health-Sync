@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
 // Helper component to handle list of dictionaries (for medications, contacts, etc.)
 const DynamicFieldArray = ({ list, setList, fields, title }) => {
   const handleAdd = () => {
@@ -58,6 +58,7 @@ const DynamicFieldArray = ({ list, setList, fields, title }) => {
 };
 
 const Signup = () => {
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     role: "elder",
     username: "",
@@ -153,6 +154,7 @@ const Signup = () => {
       if (response.ok) {
         localStorage.setItem("accessToken", data.access_token);
         alert("Registration successful!");
+        navigate('/');
       } else {
         throw new Error(data.msg || "Registration failed");
       }
