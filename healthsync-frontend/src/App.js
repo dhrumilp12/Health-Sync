@@ -19,6 +19,7 @@ import AppointmentsList from "./components/Appointment/AppointmentsList";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MedicationList from "./components/Medication/MedicationList";
 import MedicationSchedule from "./components/Medication/MedicationSchedule";
+import FoodCategories from "./pages/Food/Food";
 
 function App() {
   const initialHealthData = [
@@ -149,6 +150,7 @@ function App() {
         />
         <Route path="/medication-list" element={<MedicationList />} />
         <Route path="/medication-form" element={<MedicationSchedule />} />
+        <Route path="/food" element={<FoodCategories />} />
       </Routes>
     </>
   );
