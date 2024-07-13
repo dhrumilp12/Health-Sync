@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 
 const Login = () => {
@@ -8,6 +9,8 @@ const Login = () => {
     password: ""
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +33,10 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('accessToken', data.access_token);  // Save the token
-    } else {
+        setIsLoggedIn(true);
+        navigate("/");
+        
+      } else {
         throw new Error(data.msg || 'Login failed');
     }
       console.log("Access Token:", data.access_token);
@@ -49,7 +55,7 @@ const Login = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Your Company"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+            src="https://cdn-icons-png.freepik.com/512/8495/8495174.png"
             className="mx-auto h-10 w-auto"
           />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

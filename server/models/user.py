@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, EmailField, DateTimeField, ListField, BooleanField, EmbeddedDocument, EmbeddedDocumentField, IntField
+from mongoengine import Document, StringField, EmailField, FloatField, DateTimeField, ReferenceField, ListField, BooleanField, EmbeddedDocument, EmbeddedDocumentField, IntField, ValidationError
 from datetime import datetime
 
 class Medication(EmbeddedDocument):
@@ -48,3 +48,30 @@ class MedicationSchedule(Document):
     frequency = StringField(required=True)
     date = DateTimeField(required=True)
     reminderTimes = ListField(StringField())
+
+
+class Ingredient(EmbeddedDocument):
+    name = StringField(required=True)
+    quantity = FloatField(required=True)
+    unit = StringField(required=True)
+class FoodItem(EmbeddedDocument):
+    name = StringField(required=True)
+    calories = FloatField(required=True, min_value=0)
+    protein = FloatField(default=0.0, min_value=0)
+    carbs = FloatField(default=0.0, min_value=0)
+    fats = FloatField(default=0.0, min_value=0)
+    fiber = FloatField(default=0.0, min_value=0)  # Additional nutritional information
+    ingredients = ListField(EmbeddedDocumentField(Ingredient))  # List of ingredients for each food item
+
+    def clean(self):
+        """ Ensure that total macronutrients do not exceed total calories unexpectedly """
+        if (self.protein * 4 + self.carbs * 4 + self.fats * 9) > self.calories:
+            raise ValidationError("Caloric content does not match macronutrient profile.")
+
+class Meal(Document):
+    user = ReferenceField('User', required=True)
+    date = DateTimeField(required=True)
+    meals = ListField(EmbeddedDocumentField(FoodItem))
+    created_at = DateTimeField(default=datetime.utcnow)  # Timestamp of when the meal was logged
+
+
