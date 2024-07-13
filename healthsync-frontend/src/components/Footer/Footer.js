@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bg-[#aed4ff] mt-20 p-10 md:px-16">
       <div className="max-w-[1250px] m-auto flex flex-col md:flex-row justify-center md:justify-between items-center md:items-start gap-14">
         <div className="font-bold text-center md:text-left flex-shrink-0">
-          <img width={50} src={FooterData.logo} alt="Footer Logo" className="mx-auto md:mx-0" />
+          <img width={50} src={FooterData.logo} alt="Footer Logo" className="mx-auto md:mx-0 rounded-md" />
           {FooterData.addresses.map((address, index) => (
             <p className="my-3" key={index}>
               {address}
