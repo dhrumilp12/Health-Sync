@@ -4,7 +4,7 @@ import FilterFood from "./FilterFood";
 const FoodCategories = () => {
   const [categories, setCategories] = useState("");
   const [searched, setSearched] = useState(false);
-  const [filtered, setFiltered] = useState(false);
+
   console.log(categories.meals);
   const search = async () => {
     const apiUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${categories}`;
@@ -25,12 +25,9 @@ const FoodCategories = () => {
         console.error("Error fetching data:", err);
       });
   };
-  console.log(filtered);
+
   return (
     <div>
-      <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-green-400 md:text-5xl lg:text-6xl">
-        FoodCategorizerApp
-      </h1>
       <input
         type="text"
         onChange={(e) => setCategories(e.target.value)}
@@ -53,7 +50,7 @@ const FoodCategories = () => {
               <div
                 key={item.idMeal}
                 className="p-4"
-                style={{ visibility: filtered ? "hidden" : "visible" }}
+                // style={{ visibility: filtered ? "hidden" : "visible" }}
               >
                 <img src={item.strMealThumb} alt={item.strMeal} />
                 <h1 className="font-bold text-center">{item.strMeal}</h1>
