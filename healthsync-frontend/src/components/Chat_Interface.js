@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Box, TextField, Typography, Snackbar, IconButton, InputAdornment, Card, CardContent, Divider, CircularProgress, Button , Select, MenuItem, FormControl, InputLabel, DialogActions, Dialog, DialogTitle, DialogContent} from '@mui/material';
+import { Box, TextField, Typography, Snackbar, IconButton, InputAdornment, Card, CardContent, Divider, CircularProgress, Button , Select, MenuItem, FormControl, InputLabel, DialogActions, Dialog, DialogTitle, DialogContent,Tooltip} from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import Switch from '@mui/material/Switch';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import SendIcon from '@mui/icons-material/Send';
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import backgroundImg from '../assets/Images/Logo.png'; 
-
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female';
 // Custom Theme
 const theme = createTheme({
   palette: {
@@ -80,13 +84,63 @@ const ChatInterface = () => {
     const [language, setLanguage] = useState('en-US');
     const token = localStorage.getItem('accessToken');  // Assuming JWTs are stored in localStorage
     const audioChunksRef = useRef([]);
-    
+    const [currentPlayingMessage, setCurrentPlayingMessage] = useState(null);
+    const [voiceEnabled, setVoiceEnabled] = useState(false);
+    const [voiceType, setVoiceType] = useState('female'); // Default to female
 
     // Fetch the welcome message on component mount
     useEffect(() => {
       
         setMessages([{ message: 'Welcome to the Health Assistant.Please submit your health-related questions.', sender: 'system' }]);
     }, []);
+
+    const handleToggleVoice = (event) => {
+        event.preventDefault(); // Prevents the IconButton from triggering form submissions if used in forms
+        setVoiceEnabled(!voiceEnabled);
+      };
+
+      const speak = (text) => {
+        if (!voiceEnabled || text === currentPlayingMessage) {
+            setCurrentPlayingMessage(null);
+            window.speechSynthesis.cancel();
+            return;
+        }
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(text);
+        const setVoiceAndSpeak = () => {
+            const voices = synth.getVoices();
+            console.log(voices.map(voice => `${voice.name} - ${voice.lang} - ${voice.gender}`));
+            let selectedVoice;
+    
+            if (voiceType === 'female') {
+                selectedVoice = voices.find(voice => voice.name.includes("Microsoft Zira")); // Adjust based on available voices
+            } else {
+                selectedVoice = voices.find(voice => voice.name.includes("Microsoft Mark")); // Example for male voice
+            }
+    
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            } else {
+                console.log("Preferred voice not found, using default");
+            }
+    
+            utterance.onend = () => setCurrentPlayingMessage(null);
+            setCurrentPlayingMessage(text);
+            synth.speak(utterance);
+        };
+    
+        if (synth.getVoices().length === 0) {
+            synth.onvoiceschanged = setVoiceAndSpeak;
+        } else {
+            setVoiceAndSpeak();
+        }
+    };
+    
+
+    const messageIcon = (message) => {
+        return message === currentPlayingMessage ? <VolumeOffIcon /> : <VolumeUpIcon />;
+    };
+    
 
     const handleInputChange = (event) => setInput(event.target.value);
     const handleLanguageChange = (event) => setLanguage(event.target.value);
@@ -109,6 +163,9 @@ const ChatInterface = () => {
             });
             const data = response.data.response;
             console.log(data);
+            if (voiceEnabled && data) { // Ensure voice is enabled and the message is not empty
+                speak(data);
+            }
             setMessages(msgs => [...msgs, { message: input, sender: 'user' }, { message: data, sender: 'system' }]);
             setInput('');  // Clear input after sending
         } catch (error) {
@@ -215,7 +272,72 @@ const ChatInterface = () => {
                         opacity: 0.1, // Adjust opacity to your liking
                         
                     }
-                    }}>  
+                    }}>
+                        <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center', // This ensures all items in the box are aligned to the center vertically
+                        justifyContent: 'space-between', // This spreads out the items to use the available space
+                        position: 'relative', // Relative positioning for positioning children absolutely within the box if needed
+                        marginBottom:'5px',
+                    }}>
+                    <Tooltip title="Toggle voice responses">
+                        <IconButton color="inherit" onClick={handleToggleVoice} sx={{ padding: 0 }}>
+                            <Switch
+                            checked={voiceEnabled}
+                            onChange={(e) => setVoiceEnabled(e.target.checked)}
+                            icon={<VolumeOffIcon />}
+                            checkedIcon={<VolumeUpIcon />}
+                            inputProps={{ 'aria-label': 'Voice response toggle' }}
+                            color="default"
+                            sx={{
+                                height: 42, // Adjust height to align with icons
+                                '& .MuiSwitch-switchBase': {
+                                padding: '9px', // Reduce padding to make the switch smaller
+                                },
+                                '& .MuiSwitch-switchBase.Mui-checked': {
+                                color: 'white',
+                                transform: 'translateX(16px)',
+                                '& + .MuiSwitch-track': {
+                                    
+                                    backgroundColor: 'primary.main',
+                                },
+                                },
+                            }}
+                            />
+                        </IconButton>
+                        </Tooltip>
+                        {voiceEnabled && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 1}}>
+                            <FormControl fullWidth size="small">
+                              <InputLabel id="voice-type-label">Voice Type</InputLabel>
+                              <Select
+                                labelId="voice-type-label"
+                                value={voiceType}
+                                onChange={(e) => setVoiceType(e.target.value)}
+                                label="Voice Type"
+                              >
+                                <MenuItem value="female">
+                                  <Tooltip title="Microsoft Zira - Female Voice (United States)">
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                      <FemaleIcon color="pink" />
+                                      Zira
+                                    </Box>
+                                  </Tooltip>
+                                </MenuItem>
+                                <MenuItem value="male">
+                                  <Tooltip title="Microsoft David - Male Voice (United States)">
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                      <MaleIcon color="blue" />
+                                      David
+                                    </Box>
+                                  </Tooltip>
+                                </MenuItem>
+                              </Select>
+                            </FormControl>
+                          </Box>
+                        )}
+                    </Box>
+                        <Divider />
                       {messages.map((msg, index) => (
                     <Typography key={index} align={msg.sender === 'user' ? 'right' : 'left'} sx={{
                         fontWeight: 'bold',
@@ -230,6 +352,10 @@ const ChatInterface = () => {
                         margin: '4px 0', // Add margin for spacing between messages
                     }}>
                         {msg.message}
+                        {voiceEnabled && msg.sender === 'system' && (
+                                                <IconButton onClick={() => speak(msg.message)} size="small" sx={{ ml: 1, }}>
+                                                    {messageIcon(msg.message)}
+                                                </IconButton>)}
                     </Typography>
                     ))}
                   </CardContent>
