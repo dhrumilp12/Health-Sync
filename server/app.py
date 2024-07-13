@@ -1,23 +1,20 @@
+import collections
+
 from dotenv import load_dotenv
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from mongoengine import connect
-from dotenv import load_dotenv
-from mongoengine import connect
-from flask_cors import CORS
 
-
-
-import collections
 collections.Iterable = collections.abc.Iterable
 
+import os
+
 from routes.meals import meals_routes
+from routes.OpenAI import OpenAI_routes
 from routes.SOS import SOS_routes
 from routes.user import user_routes
-from routes.OpenAI import OpenAI_routes
-import os
 from twilio.rest import Client
-
 
 load_dotenv()  # Load environment variables from .env file
 
