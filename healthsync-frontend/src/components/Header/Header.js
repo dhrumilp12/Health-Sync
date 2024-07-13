@@ -28,7 +28,7 @@ const Header = () => {
       } transition fixed top-0 z-30 w-full p-5 md:px-16`}
     >
       <Link to="/">
-        <img className="w-10 sm:w-20" src={Logo} alt="Logo" />
+        <img className="w-8 sm:w-16 rounded-md" src={Logo} alt="Logo" />
       </Link>
       <NavBar
         flexBetween={flexBetween}

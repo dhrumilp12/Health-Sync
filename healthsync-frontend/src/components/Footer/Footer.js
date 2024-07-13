@@ -4,10 +4,10 @@ import Input from "../UI/Input";
 
 const Footer = () => {
   return (
-    <div className="bg-[#aed4ff] mt-20 p-10 md:px-16">
-      <div className="max-w-[1250px] m-auto flex justify-center gap-14 flex-wrap md:flex-nowrap">
-        <div className="font-bold">
-          <img width={50} src={FooterData.logo} alt="Logo" />
+    <footer className="bg-[#aed4ff] mt-20 p-10 md:px-16">
+      <div className="max-w-[1250px] m-auto flex flex-col md:flex-row justify-center md:justify-between items-center md:items-start gap-14">
+        <div className="font-bold text-center md:text-left flex-shrink-0">
+          <img width={50} src={FooterData.logo} alt="Footer Logo" className="mx-auto md:mx-0" />
           {FooterData.addresses.map((address, index) => (
             <p className="my-3" key={index}>
               {address}
@@ -15,22 +15,18 @@ const Footer = () => {
           ))}
           <p>{FooterData.phone}</p>
         </div>
-        <div className="flex gap-10">
-          <ul>
-            {FooterData.links.map((link, index) => (
-              <li key={index}>{link}</li>
-            ))}
-          </ul>
+        <div className="w-full md:w-auto text-center md:text-left flex justify-center md:justify-start">
+          <div>
+            <h4 className="font-semibold mb-4">Follow Us</h4>
+            <SocialsDiv />
+          </div>
         </div>
-        <div className="max-w-xs">
-          <p className="ml-1 font-bold max-w-[250px]">
-            Have Something To Talk About With Our Professionals?
-          </p>
-          <Input placeholder="Your Email" />
-          <SocialsDiv />
+        <div className="w-full md:w-auto text-center md:text-left">
+          <h4 className="font-semibold mb-4">Subscribe to our newsletter</h4>
+          <Input placeholder="Enter your email" />
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
 
