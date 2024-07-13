@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-
+import Logo from "../assets/Images/Logo.png";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -53,11 +53,11 @@ const Login = () => {
       
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 lg:mt-20">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Your Company"
-            src="https://cdn-icons-png.freepik.com/512/8495/8495174.png"
-            className="mx-auto h-10 w-auto"
-          />
+        <img
+          alt="HealthSync Logo"
+          src={Logo}
+          className="mx-auto h-10 w-auto rounded-md" 
+        />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign in to your account
           </h2>
