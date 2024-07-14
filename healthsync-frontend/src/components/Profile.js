@@ -41,6 +41,7 @@ const Profile = () => {
                 }
             });
             const data = await response.json();
+            console.log('Profile data:', data);
             if (response.ok) {
                 setUserData(data);
             } else {
@@ -57,8 +58,16 @@ const Profile = () => {
         setEditMode(!editMode);
     };
 
-    const handleChange = (event, field) => {
-        setUserData({ ...userData, [field]: event.target.value });
+    const handleChange = (event, field, index, subField) => {
+        if (index !== undefined && subField !== undefined) {
+            const updatedArray = [...userData[field]];
+            updatedArray[index][subField] = event.target.value;
+            setUserData({ ...userData, [field]: updatedArray });
+        } else if (Array.isArray(userData[field])) {
+            setUserData({ ...userData, [field]: event.target.value.split(',').map(item => item.trim()) });
+        } else {
+            setUserData({ ...userData, [field]: event.target.value });
+        }
     };
 
     const handleSave = async () => {
@@ -95,6 +104,46 @@ const Profile = () => {
         fetchProfile();
     }, []);
 
+    const formatNestedObject = (key, value) => {
+        if (Array.isArray(value)) {
+            return value.map((item, index) => (
+                <Box key={index} sx={{ mb: 1, ml: 2 }}>
+                    {Object.entries(item).map(([subKey, subValue]) => (
+                        <Typography key={subKey} variant="body2">
+                            <strong>{subKey.charAt(0).toUpperCase() + subKey.slice(1)}:</strong> {subValue}
+                        </Typography>
+                    ))}
+                </Box>
+            ));
+        }
+        return value.toString();
+    };
+    
+    const renderEditableNestedObject = (key, value) => {
+        if (Array.isArray(value)) {
+            return value.map((item, index) => (
+                <Box key={index} sx={{ mb: 1, ml: 2 }}>
+                    {Object.entries(item).map(([subKey, subValue]) => (
+                        <TextField
+                            key={subKey}
+                            label={subKey.charAt(0).toUpperCase() + subKey.slice(1).replace(/_/g, ' ')}
+                            fullWidth
+                            variant="outlined"
+                            value={subValue}
+                            onChange={(e) => handleChange(e, key, index, subKey)}
+                            sx={{ mb: 1 }}
+                        />
+                    ))}
+                </Box>
+            ));
+        }
+        return <TextField label={key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')} fullWidth variant="outlined" value={value} onChange={(e) => handleChange(e, key)} />;
+    };
+
+    const formatBoolean = (value) => {
+        return value ? 'True' : 'False';
+    };
+
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={2} justifyContent="center">
@@ -127,17 +176,30 @@ const Profile = () => {
                                     {Object.entries(userData).map(([key, value]) => (
                                         <Grid item xs={12} md={6} key={key}>
                                             {editMode && editableFields.has(key) ? (
-                                                <TextField
-                                                    label={key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    value={value}
-                                                    onChange={(e) => handleChange(e, key)}
-                                                />
-                                            ) : (
-                                                <Typography variant="body1">
-                                                    <strong>{key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
-                                                </Typography>
+                                                typeof value === 'object' && value !== null ? (
+                                                    renderEditableNestedObject(key, value)
+                                                ) : (
+                                                    <TextField
+                                                        label={key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        value={value}
+                                                        onChange={(e) => handleChange(e, key)}
+                                                    />
+                                                )
+                                            ): (
+                                                <Box>
+                                                    <Typography variant="body1">
+                                                        <strong>{key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}:</strong>
+                                                    </Typography>
+                                                    {typeof value === 'boolean' ? (
+                                                        <Typography variant="body2">{formatBoolean(value)}</Typography>
+                                                    ) : typeof value === 'object' ? (
+                                                        formatNestedObject(key, value)
+                                                    ) : (
+                                                        <Typography variant="body2">{value}</Typography>
+                                                    )}
+                                                </Box>
                                             )}
                                         </Grid>
                                     ))}

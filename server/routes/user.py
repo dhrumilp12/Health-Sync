@@ -141,6 +141,12 @@ def update_profile():
         return jsonify({"msg": "User not found"}), 404
     
     data = request.get_json()
+    # Ensure reminderTimes is a list for each medication
+    if 'medications' in data:
+        for medication in data['medications']:
+            if 'reminderTimes' in medication and not isinstance(medication['reminderTimes'], list):
+                medication['reminderTimes'] = list(medication['reminderTimes'])
+                
     user.modify(
         first_name=data.get('first_name', user.first_name),
         last_name=data.get('last_name', user.last_name),
