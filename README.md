@@ -7,7 +7,7 @@
 ## Features
 
 - **Medication Management:** Automated schedules and reminders for medications, including dosage timings with a feature to reorder prescriptions seamlessly.
-- **Appointment Scheduler:** Direct integration with healthcare providers to schedule appointments, featuring transportation arrangements like Uber for easy access to healthcare facilities.
+- **Appointment Scheduler:** Direct integration with healthcare providers to schedule appointments.
 - **SOS Emergency Button:** A one-click emergency call feature that promptly alerts emergency services and shares the user’s location and medical profile with predefined contacts.
 - **AI-Powered Health Assistant:** Employs natural language processing to facilitate interaction through voice commands, helping users recall appointment details and access medical advice.
 - **Interactive Health Education:** Provides customized educational content on common elderly health issues, medication management, and lifestyle tips.
@@ -16,7 +16,7 @@
 ## Technologies Used
 
 - **Languages:** 
-  - **[JavaScript (React Native)](https://react.dev/)** was chosen for its efficiency in building interactive user interfaces, with **[Create React App](https://create-react-app.dev/)** used to optimize the development experience
+  - **[JavaScript (React JS)](https://react.dev/)** was chosen for its efficiency in building interactive user interfaces, with **[Create React App](https://create-react-app.dev/)** used to optimize the development experience
   - **[Python](https://www.python.org/)** Employs robust scripting capabilities that manage backend logic and data processing.
 
 - **Frameworks:** 
@@ -38,9 +38,10 @@
 
 - **APIs:** 
   - **[Twilio](https://www.twilio.com/):** Provides reliable communication services for emergency contact notifications.
-  - **[Transportation APIs](https://rapidapi.com/category/Transportation):** Facilitates the integration of transportation booking features directly within the app.
+  - **[Leaflet API](https://leafletjs.com/):** For integrating interactive maps, crucial for visualizing geographical data and enhancing navigational functionalities within the app.
   - **[Strip API](https://stripe.com/):** Manages financial transactions such as prescription reordering.
   - **[Food API](https://rapidapi.com/collection/food-apis):** Supports the AI Nutritionist feature, aiding in dietary tracking and meal planning.
+  - **[TheMealDB API](https://www.themealdb.com/api.php):** Utilized to access a vast database of meal recipes, which helps our AI-powered nutritionist provide tailored dietary recommendations.
 
 ## Getting Started
 
