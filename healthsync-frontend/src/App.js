@@ -186,9 +186,9 @@ function App() {
         <Route
           path="/suggest-meals"
           element={
-            <ProtectedRoute>
+            
               <FoodSuggestForm />
-            </ProtectedRoute>
+            
           }
         />
         <Route
