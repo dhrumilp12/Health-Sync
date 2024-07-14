@@ -284,13 +284,13 @@ def getMedicationsList():
     print("Current time: ", current_time_only)  # Prints the current time
     
     # Compare the times
-    if timeGivenByUser <= current_time_only:
-        TO_NUMBER = os.getenv("TO_NUMBER")
-        FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
-        message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
-        print(message.body)
-    else:
-        print("It's not time for your medicine yet")
+    # if timeGivenByUser <= current_time_only:
+    #     TO_NUMBER = os.getenv("TO_NUMBER")
+    #     FROM_NUMBER_SMS = os.getenv("FROM_NUMBER_SMS")
+    #     message=client.messages.create(to=TO_NUMBER,from_=FROM_NUMBER_SMS,body="Please consume your medicine. Sent from your Health Sync app.")
+    #     print(message.body)
+    # else:
+    #     print("It's not time for your medicine yet")
     
     return jsonify(medications_list), 200
 
