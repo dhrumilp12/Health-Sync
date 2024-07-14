@@ -6,7 +6,6 @@ import { AuthContext } from "../../context/AuthContext";
 import Button from "../UI/Button";
 import Links from "./Links";
 
-
 const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
   const [isMenuToggled, setIsMenuToggled] = useState(false);
   const isAboveMediumScreens = useMediaQuery("(min-width: 900px)");
@@ -15,7 +14,7 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
   const [isAppointmentDropdownOpen, setAppointmentIsDropdownOpen] =
     useState(false);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
@@ -51,22 +50,25 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
               SOS
             </Link>
             <select
-      className={`${"text-primary mt-0.5 border-[#2b7dad]"} transition font-bold text-lg duration-500 hover:text-[#2b7dad] bg-transparent`}
-      onChange={handleSelectChange}
-    >
-      <option value="">Medication & Food</option>
-      <option value="/medication-list">Medication List</option>
-      <option value="/medication-form">Medication Form</option>
-      <option value="/food">Food recommendation</option>
-      <option value="/meals">Meals</option>
-      <option value="/food-list">Food List</option>
-    </select>
+              className={`${"text-primary mt-0.5 border-[#2b7dad]"} transition font-bold text-lg duration-500 hover:text-[#2b7dad] bg-transparent`}
+              onChange={handleSelectChange}
+            >
+              <option value="">Medication & Food</option>
+              <option value="/medication-list">Medication List</option>
+              <option value="/medication-form">Medication Form</option>
+              <option value="/food">Food recommendation</option>
+              <option value="/meals">Meals</option>
+              <option value="/food-list">Food List</option>
+            </select>
           </div>
           <Link to="/health-input">
             <Button>Health Input</Button>
           </Link>
           <Link to="/health-visualization">
             <Button>Health Visualization</Button>
+          </Link>
+          <Link to="/suggest-meals">
+            <Button>Suggest Meals</Button>
           </Link>
           {isLoggedIn ? (
             <div className="relative">
@@ -127,30 +129,30 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }) => {
                       </span>
                     ) : (
                       <span className="ml-3">
-                      <svg
-                        fill="#949494"
-                        height="20px"
-                        width="20px"
-                        version="1.1"
-                        id="Layer_1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 330 330"
-                        transform="rotate(180)"
-                      >
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g
-                          id="SVGRepo_tracerCarrier"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        ></g>
-                        <g id="SVGRepo_iconCarrier">
-                          {" "}
-                          <path
-                            id="XMLID_225_"
-                            d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
-                          ></path>{" "}
-                        </g>
-                      </svg>
+                        <svg
+                          fill="#949494"
+                          height="20px"
+                          width="20px"
+                          version="1.1"
+                          id="Layer_1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 330 330"
+                          transform="rotate(180)"
+                        >
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {" "}
+                            <path
+                              id="XMLID_225_"
+                              d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+                            ></path>{" "}
+                          </g>
+                        </svg>
                       </span>
                     )}
                   </div>
