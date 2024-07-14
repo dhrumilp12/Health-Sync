@@ -80,3 +80,4 @@ npm run build
 ```
 ## Created with ❤️ by Dhrumil,Anup and Vidip
 `Dhrumil Patel - Full Stack Developer & Software Engineer`<br>
+`Vidip Ghosh - Full Stack Developer`<br>
