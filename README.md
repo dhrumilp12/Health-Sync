@@ -41,6 +41,7 @@
   - **[Leaflet API](https://leafletjs.com/):** For integrating interactive maps, crucial for visualizing geographical data and enhancing navigational functionalities within the app.
   - **[Strip API](https://stripe.com/):** Manages financial transactions such as prescription reordering.
   - **[Food API](https://rapidapi.com/collection/food-apis):** Supports the AI Nutritionist feature, aiding in dietary tracking and meal planning.
+  - **[TheMealDB API](https://www.themealdb.com/api.php):** Utilized to access a vast database of meal recipes, which helps our AI-powered nutritionist provide tailored dietary recommendations.
 
 ## Getting Started
 
