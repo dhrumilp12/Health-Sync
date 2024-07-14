@@ -11,8 +11,13 @@ const FoodSuggestForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('accessToken'); // Retrieve the stored token
     axios
-      .post("http://127.0.0.1:5000/api/suggest_meals", { preferences })
+      .post("http://127.0.0.1:5000/api/suggest_meals", { preferences }, {
+        headers: {
+          'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        }
+      })
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -24,6 +29,7 @@ const FoodSuggestForm = () => {
         console.log(err);
       });
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
