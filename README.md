@@ -1,6 +1,5 @@
 
-## Created with ❤️ by Dhrumil,Anup and Vidip
-`Dhrumil Patel - Full Stack Developer & Software Engineer`<br>
+
 
 # HealthSync
 **HealthSync** is more than just an app; it's a **lifeline for the elderly**. This web application streamlines complex health management tasks into a user-friendly interface. By integrating **medication schedules, doctor's appointments, emergency services, and real-time health monitoring**, **HealthSync** acts as a **comprehensive health assistant** that enhances the autonomy and safety of its users, ensuring they feel secure and supported every day.
@@ -79,4 +78,5 @@ npm start
 ```
 npm run build
 ```
-
+## Created with ❤️ by Dhrumil,Anup and Vidip
+`Dhrumil Patel - Full Stack Developer & Software Engineer`<br>
